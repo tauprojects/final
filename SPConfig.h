@@ -9,6 +9,7 @@
  * A data-structure which is used for configuring the system.
  */
 
+#define MAXLEN 1024
 typedef enum sp_config_msg_t {
 	SP_CONFIG_MISSING_DIR,
 	SP_CONFIG_MISSING_PREFIX,
@@ -22,7 +23,11 @@ typedef enum sp_config_msg_t {
 	SP_CONFIG_INDEX_OUT_OF_RANGE,
 	SP_CONFIG_SUCCESS
 } SP_CONFIG_MSG;
-
+typedef enum sp_split_method_t {
+	RANDOM,
+	MAX_SPREAD,
+	INCREMENTAL
+} SP_SPLIT_METHOD;
 typedef struct sp_config_t* SPConfig;
 
 /**

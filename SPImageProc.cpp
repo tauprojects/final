@@ -1,6 +1,3 @@
-extern "C" {
-#include "SPLogger.h"
-}
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
@@ -11,7 +8,9 @@ extern "C" {
 #include <opencv2/highgui.hpp>
 #include <cstdio>
 #include "SPImageProc.h"
-
+extern "C" {
+#include "SPLogger.h"
+}
 
 using namespace cv;
 using namespace std;
@@ -37,7 +36,7 @@ using namespace std;
 
 void sp::ImageProc::initFromConfig(const SPConfig config) {
 	SP_CONFIG_MSG msg = SP_CONFIG_SUCCESS;
-	
+	pcaDim = spConfigGetPCADim(config, &msg);
 	if (msg != SP_CONFIG_SUCCESS) {
 		spLoggerPrintError(PCA_DIM_ERROR_MSG, __FILE__, __func__, __LINE__);
 		throw Exception();
@@ -203,6 +202,7 @@ SPPoint* sp::ImageProc::getImageFeatures(const char* imagePath, int index,
 		}
 		resPoints[i] = spPointCreate(pcaSift, pcaDim, index);
 	}
+	free(pcaSift);
 	return resPoints;
 }
 

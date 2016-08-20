@@ -24,39 +24,13 @@ struct sp_config_t{
  * trim: get rid of trailing and leading whitespace...
  *       ...including the annoying "\n" from fgets()
  */
+void strToLower(char* s);
+void remCharEnd(char* s);
+void remCharBeg(char* s);
+bool isSpace(char* string);
+void printConstrainMsg(const char* filename,int line);
 
-void remCharEnd(char* s){
-	char *token = (char*)malloc(sizeof(char)*MAXLEN);
-	int len = strlen(s);
-	int i=0;
-	while((i<len && s[i]!=' ') ){
-		token[i]=s[i];
-		i++;
-	}
-	token[i]='\0';
-	strncpy(s,token,MAXLEN);
-}
-void remCharBeg(char* s){
-	char *token;
-	int len = strlen(s);
-	int i=0;
-	while(i<len && s[i]==' ')
-		i++;
-	token=&s[i];
-	strncpy(s,token,MAXLEN);
-}
 
-bool isSpace(char* string){
-	int len = strlen(string);
-	for(int i=0;i<len;i++){
-		if (string[i]==' ')
-				return true;
-	}
-	return false;
-}
-void printConstrainMsg(const char* filename,int line){
-	printf(" File: %s \n Line: %d \n Message: Invalid value - constraint not met\n",filename,line);
-}
 void helperFunc(char* key,char* val,SPConfig config){
    printf("key is %s, val is %s !\n",key,val );
 	if  (strcmp(key,"spImagesDirectory")==0) {
@@ -220,5 +194,41 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg){
 	  return config;
 
 }
+//void strToLower(char* s){
+//	for(int i = 0; s[i]!='\0'; i++){
+//	  s[i] = tolower(s[i]);
+//	}
+//}
+void remCharEnd(char* s){
+	char *token = (char*)malloc(sizeof(char)*MAXLEN);
+	int len = strlen(s);
+	int i=0;
+	while((i<len && s[i]!=' ') ){
+		token[i]=s[i];
+		i++;
+	}
+	token[i]='\0';
+	strncpy(s,token,MAXLEN);
+}
+void remCharBeg(char* s){
+	char *token;
+	int len = strlen(s);
+	int i=0;
+	while(i<len && s[i]==' ')
+		i++;
+	token=&s[i];
+	strncpy(s,token,MAXLEN);
+}
 
+bool isSpace(char* string){
+	int len = strlen(string);
+	for(int i=0;i<len;i++){
+		if (string[i]==' ')
+				return true;
+	}
+	return false;
+}
+void printConstrainMsg(const char* filename,int line){
+	printf(" File: %s \n Line: %d \n Message: Invalid value - constraint not met\n",filename,line);
+}
 

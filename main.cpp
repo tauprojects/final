@@ -5,17 +5,18 @@
  *      Author: Liron
  */
 
-
-#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 #include <SPImageProc.h>
+
+
 
 #define MAX_LENGTH_PATH 1024
 
 int genaratePath(char* dirPath, char* prefix, char* suffix, int index,char* path){
-	strcpy( path, "" );
+	strcpy(path, "" );
 	char* i=(char*) malloc(sizeof(char)*MAX_LENGTH_PATH);
 	if(i==NULL){
 		fflush(NULL);
@@ -45,7 +46,7 @@ int main(){
 	char* sufFeat= (char*) malloc(sizeof(char)*10);
 	strcpy( sufFeat, ".feat" );
 	FILE *tempFile;
-	SPPoint* resPoints=NULL;
+	SPPoint* resPoints;
 	int* numOfFeats=(int*) malloc(sizeof(int));
 	sp::ImageProc imgP (config);   //Creates new instance if ImageProc
 	if(getSpExtractionMode(config)){
@@ -58,10 +59,12 @@ int main(){
 			fwrite("\n",sizeof(char),1,tempFile);
 			for(int j=0;j<numOfFeats[0];i++){
 				for(int k=0;k<127;i++){
-					fwrite((const void*)resPoints[j][k],sizeof(double),1,tempFile);
+					double temp = spPointGetAxisCoor(resPoints[j],k);
+					fwrite((const void*)&temp,sizeof(double),1,tempFile);
 					fwrite("\t",sizeof(char),1,tempFile);
 				}
-				fwrite((const void*)resPoints[j][127],sizeof(double),1,tempFile);
+				double temp = spPointGetAxisCoor(resPoints[j],127);
+				fwrite((const void*)&temp,sizeof(double),1,tempFile);
 				fwrite("\n",sizeof(char),1,tempFile);
 			}
 			fclose(tempFile);

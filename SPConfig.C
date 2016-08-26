@@ -20,7 +20,6 @@ struct sp_config_t{
 	int spLoggerLevel;
 	char* spLoggerFilename;
 };
-gygytgtuguyguy;
 /*
  * trim: get rid of trailing and leading whitespace...
  *       ...including the annoying "\n" from fgets()
@@ -311,13 +310,30 @@ bool getSpExtractionMode(SPConfig config){
 	puts("Im in extract");
 	return true;
 }
+SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config){
+	if (config==NULL || pcaPath==NULL)
+		return SP_CONFIG_INVALID_ARGUMENT;
+	strcat(pcaPath,config->spImagesDirectory);
+	strcat(pcaPath,config->spPCAFilename);
+	return SP_CONFIG_SUCCESS;
+}
 
-int getSpNumOfImages(SPConfig config);
+void genarateFeatPath(char* featPath, const SPConfig config, int index){
+	if(featPath==NULL || config==NULL)
+			return ;
+		if(index>=config->spNumOfImages)
+			return ;
+		strcpy( featPath, "" );
+		char* i=(char*) malloc(sizeof(char)*MAXLEN);
+		if(i==NULL){
+			fflush(NULL);
+			return ;
+		}
+		sprintf(i,"%d",index);
+		strcat(featPath,config->spImagesDirectory);
+		strcat(featPath,config->spImagesPrefix);
+		strcat(featPath,i);
+		strcat(featPath,".feat");
+		return ;
+}
 
-char* getSpImagesDirectory(SPConfig config);
-
-char* getSpImagesSuffix(SPConfig config);
-
-char* getSpImagesPrefix(SPConfig config);
-
-int getImageFeatures(SPConfig config);

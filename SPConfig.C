@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 struct sp_config_t{
 	char* spImagesDirectory;
@@ -19,7 +20,7 @@ struct sp_config_t{
 	int spLoggerLevel;
 	char* spLoggerFilename;
 };
-
+gygytgtuguyguy;
 /*
  * trim: get rid of trailing and leading whitespace...
  *       ...including the annoying "\n" from fgets()
@@ -194,6 +195,80 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg){
 	  return config;
 
 }
+
+bool spConfigIsExtractionMode(const SPConfig config, SP_CONFIG_MSG* msg){
+	assert(msg!=NULL);
+	if(config==NULL){
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+	}
+	*msg = SP_CONFIG_SUCCESS;
+	if(config->spExtractionMode)
+		return true;
+	else
+		return false;
+}
+
+bool spConfigMinimalGui(const SPConfig config, SP_CONFIG_MSG* msg){
+	assert(msg!=NULL);
+	if(config==NULL){
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+	}
+	*msg = SP_CONFIG_SUCCESS;
+	if(config->spMinimalGUI)
+		return true;
+	else
+		return false;
+}
+
+int spConfigGetNumOfImages(const SPConfig config, SP_CONFIG_MSG* msg){
+	assert(msg!=NULL);
+	if(config==NULL){
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return -1;
+	}
+	return config->spNumOfImages;
+}
+
+int spConfigGetNumOfFeatures(const SPConfig config, SP_CONFIG_MSG* msg){
+	assert(msg!=NULL);
+	if(config==NULL){
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return -1;
+	}
+	return config->spNumOfFeatures;
+}
+int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg){
+	assert(msg!=NULL);
+	if(config==NULL){
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return -1;
+	}
+	return config->spPCADimension;
+}
+
+SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config, int index){
+	if(imagePath==NULL || config==NULL)
+		return SP_CONFIG_INVALID_ARGUMENT;
+	if(index>=config->spNumOfImages)
+		return SP_CONFIG_INDEX_OUT_OF_RANGE;
+	strcpy( imagePath, "" );
+	char* i=(char*) malloc(sizeof(char)*MAXLEN);
+	if(i==NULL){
+		fflush(NULL);
+		return SP_CONFIG_ALLOC_FAIL;
+	}
+	sprintf(i,"%d",index);
+	strcat(imagePath,config->spImagesDirectory);
+	strcat(imagePath,config->spImagesPrefix);
+	strcat(imagePath,i);
+	strcat(imagePath,config->spImagesSuffix);
+	return SP_CONFIG_SUCCESS;
+}
+
+
+
+
+
 //void strToLower(char* s){
 //	for(int i = 0; s[i]!='\0'; i++){
 //	  s[i] = tolower(s[i]);
@@ -232,3 +307,17 @@ void printConstrainMsg(const char* filename,int line){
 	printf(" File: %s \n Line: %d \n Message: Invalid value - constraint not met\n",filename,line);
 }
 
+bool getSpExtractionMode(SPConfig config){
+	puts("Im in extract");
+	return true;
+}
+
+int getSpNumOfImages(SPConfig config);
+
+char* getSpImagesDirectory(SPConfig config);
+
+char* getSpImagesSuffix(SPConfig config);
+
+char* getSpImagesPrefix(SPConfig config);
+
+int getImageFeatures(SPConfig config);

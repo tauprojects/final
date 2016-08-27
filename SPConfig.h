@@ -176,5 +176,5 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
 void spConfigDestroy(SPConfig config);
 
 void genarateFeatPath(char* featPath, const SPConfig config, int index);
-
+void toString(SPConfig config);
 #endif /* SPCONFIG_H_ */

@@ -171,23 +171,23 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config) {
 	return SP_CONFIG_SUCCESS;
 }
 
-void genarateFeatPath(char* featPath, const SPConfig config, int index) {
-	if (featPath == NULL || config == NULL)
-		return;
+SP_CONFIG_MSG genarateFeatPath(char* featPath, const SPConfig config, int index) {
+	if (config == NULL || featPath == NULL)
+			return SP_CONFIG_INVALID_ARGUMENT;
 	if (index >= config->spNumOfImages)
-		return;
+			return SP_CONFIG_INVALID_ARGUMENT;
 	strcpy(featPath, "");
 	char* i = (char*) malloc(sizeof(char) * MAXLEN);
 	if (i == NULL) {
 		fflush(NULL);
-		return;
+		return SP_CONFIG_ALLOC_FAIL;
 	}
 	sprintf(i, "%d", index);
 	strcat(featPath, config->spImagesDirectory);
 	strcat(featPath, config->spImagesPrefix);
 	strcat(featPath, i);
 	strcat(featPath, ".feat");
-	return;
+	return SP_CONFIG_SUCCESS;
 }
 void configMapper(char* key, char* val, SPConfig config) {
 

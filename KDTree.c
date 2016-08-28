@@ -43,6 +43,8 @@ KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD extractionMode,int i){
 
 }
 
-
+void KDTreeDestroy(KDTreeNode root){
+	//To-Do
+}
 
 

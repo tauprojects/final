@@ -41,22 +41,38 @@ int cmpfunc(const void * A, const void* B){
 }
 
 //Empty Array'Size of 0 array and other mikrey katze
-void Init(KDArray kdarray,SPPoint* arr, int size){
+SP_CONFIG_MSG Init(KDArray kdarray,SPPoint* arr, int size){
+	if(kdarray==NULL || arr==NULL)
+		return SP_CONFIG_INVALID_ARGUMENT;
 	kdarray->size=size;
 	kdarray->arr=(SPPoint*)malloc(sizeof(SPPoint)*size);
+	//allocate array
+	if(kdarray->arr==NULL){
+		fflush(NULL);
+		return SP_CONFIG_ALLOC_FAIL;
+	}
 	for(int i=0;i<size;i++){
 		kdarray->arr[i]=spPointCopy(arr[i]);
 	}
-	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size);
+	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size); //creating a temporary arr
+	if(temparr==NULL){
+		fflush(NULL);
+		return SP_CONFIG_ALLOC_FAIL;
+	}
 	kdarray->dim=spPointGetDimension(arr[0]);
-	//Aloccating kdDB
-
 	kdarray->kdDB  =(int**)malloc(sizeof(int*)*kdarray->dim);
+	if(kdarray->kdDB==NULL){
+		fflush(NULL);
+		return SP_CONFIG_ALLOC_FAIL;
+	}
 	for(int i=0;i<kdarray->dim;i++){
 		kdarray->kdDB[i]=(int*)malloc(sizeof(int)*size);
+		if(kdarray->kdDB[i]==NULL){
+			fflush(NULL);
+			return SP_CONFIG_ALLOC_FAIL;
+		}
 	}
    //Copy PointArray
-
 	for(int i=0;i<kdarray->dim;i++){
 		for(int j=0;j<size;j++){
 			temparr[j].data=spPointGetAxisCoor(arr[j],i);
@@ -68,6 +84,7 @@ void Init(KDArray kdarray,SPPoint* arr, int size){
 		}
 
 	}
+	return SP_CONFIG_SUCCESS;
 }
 
 

@@ -19,24 +19,20 @@
  *
  */
 
-/** Type for defining the point **/
+/** Type for defining the array **/
 typedef struct sp_kdarray_t* KDArray;
 
 /**
- * Allocates a new KDArray in the memory.
- * Given data array, dimension dim and an index.
- * The new point will be P = (p_0,p_2,...,p_{dim-1})
- * such that the following holds
+ * Init KDArray to array pointer.
+ * Given SSPoint arr in length of size
  *
- * - The ith coordinate of the P will be p_i
- * - p_i = data[i]
- * - The index of P = index
+ * the KDArry will contain the dim of each point, the size of KDArray,
+ * copy of the SPPoint arr and KDdb that in each row will sort by the value in this dim.
  *
- * @return
- * NULL in case allocation failure ocurred OR data is NULL OR dim <=0 OR index <0
- * Otherwise, the new point is returned
+ * @return- the response of creating the KDArray
  */
-void Init(KDArray array,SPPoint* arr, int size);
+SP_CONFIG_MSG Init(KDArray array,SPPoint* arr, int size);
+
 /**
  * Allocates a copy of the given point.
  *

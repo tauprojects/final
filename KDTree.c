@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <KDTree.h>
 
+//define an INVALID value for the edge case
 #define INVALID NULL
 
 struct kd_tree_node{
@@ -21,6 +22,7 @@ struct kd_tree_node{
 };
 
 //In the main function int i=-1 at the first call
+//check the function that will cal the recursive func with the needed value
 KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD extractionMode,int i){
 	KDTreeNode root;
 	root->data=NULL;

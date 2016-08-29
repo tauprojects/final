@@ -4,7 +4,13 @@
  *  Created on: May 20, 2016
  *      Author: MatanGizunterman and LironGazit
  */
-
+//Check how to nake an helper functions and constant libreary
+//Check with valgrind leak of memory
+//Config struct-kdarray-kdtree-nodestuct-tempstruct
+//make a destroy function for each class
+//edge cases and checking allocataion of each type.
+//arranging the header files + public\private data
+//use with the logger
 #include "SPKDarray.h"
 #include <stdio.h>
 #include <stdlib.h>

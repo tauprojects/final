@@ -31,7 +31,7 @@ typedef struct sp_kdarray_t* KDArray;
  *
  * @return- the response of creating the KDArray
  */
-SP_CONFIG_MSG Init(KDArray array,SPPoint* arr, int size);
+SP_CONFIG_MSG KdArrayInit(KDArray array,SPPoint* arr, int size);
 
 /**
  * Allocates a copy of the given point.

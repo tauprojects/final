@@ -1,5 +1,6 @@
 #include "SPList.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct node_t {
 	SPListElement data;

@@ -174,7 +174,9 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
  * If config == NULL nothig is done.
  */
 void spConfigDestroy(SPConfig config);
-
+int spConfigGetNumSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
 SP_CONFIG_MSG genarateFeatPath(char* featPath, const SPConfig config, int index);
+SP_SPLIT_METHOD getSpSplitMethod(const SPConfig config);
+int spConfigGetspKNN(const SPConfig config, SP_CONFIG_MSG* msg);
 void toString(SPConfig config);
 #endif /* SPCONFIG_H_ */

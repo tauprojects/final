@@ -47,7 +47,7 @@ int cmpfunc(const void * A, const void* B){
 }
 
 //Empty Array'Size of 0 array and other mikrey katze
-SP_CONFIG_MSG Init(KDArray kdarray,SPPoint* arr, int size){
+SP_CONFIG_MSG KdArrayInit(KDArray kdarray,SPPoint* arr, int size){
 	if(kdarray==NULL || arr==NULL)
 		return SP_CONFIG_INVALID_ARGUMENT;
 	kdarray->size=size;
@@ -105,7 +105,7 @@ double Split(KDArray kdArr, int coor,KDArray kdLeft ,KDArray kdRight){
 		index =kdArr->kdDB[coor][i];
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 	}
-	Init(kdLeft,tempArr,tempSize);
+	KdArrayInit(kdLeft,tempArr,tempSize);
 	for(int j=0;j<tempSize;j++)
 		spPointDestroy(tempArr[j]);
 	//Initialize right array
@@ -117,7 +117,7 @@ double Split(KDArray kdArr, int coor,KDArray kdLeft ,KDArray kdRight){
 		index =kdArr->kdDB[coor][i+(kdLeft->size)];
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 	}
-	Init(kdRight,tempArr,tempSize);
+	KdArrayInit(kdRight,tempArr,tempSize);
 	for(int j=0;j<tempSize;j++)
 		spPointDestroy(tempArr[j]);
 
@@ -145,10 +145,10 @@ int round_div(int dividend){
 SPPoint* KDArrayGetFirst(KDArray kdarr){
 	return kdarr->arr;
 }
-int calcCoor(KDArray kdarr,SP_SPLIT_METHOD extractionMode, int i){
+int calcCoor(KDArray kdarr,SP_SPLIT_METHOD splieMethod, int i){
 	int dim = kdarr->dim;
 	time_t t;
-	switch(extractionMode) {
+	switch(splieMethod) {
 	      case MAX_SPREAD :
 	    	  return maxDiff(kdarr);
 	      case RANDOM :

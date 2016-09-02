@@ -1,8 +1,7 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
-#include <SPPoint.h>
-#include <SPConfig.h>
 #include <SPKDarray.h>
+#include <SPBPriorityQueue.h>
 
 /**
  * KDTree Summary
@@ -21,17 +20,28 @@
 /** Type for defining the point **/
 typedef struct kd_tree_node* KDTreeNode;
 
+
+typedef enum sp_list_msg_t {
+	KD_TREE_SUCCESS,
+	KD_TREE_NULL_ARGUMENT,
+	KD_TREE_INVALID_CURRENT,
+} KD_TREE_MSG;
 /**
  * Creates a new KDTree from specific KDArray
  *
  * @param arr - The KDArray that we create the tree from it.
  * @param extractionMode - the Extraction Mode of creating the tree
- * @param i - the index of parent dim split
+ * @param i - the indekdTreeInitx of parent dim split
  * @return
  * NULL in case of memory allocation fails.
  * A new KDTreeNode with specific data on leafs(according to arr)
  */
-KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD extractionMode,int i);
+KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD splitMethod,int i);
+
+
+KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode root, SPPoint point);
+
+bool isLeaf(KDTreeNode root);
 
 /**
  * Destroys an KDTree.
@@ -41,5 +51,7 @@ KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD extractionMode,int i);
  * 			   if root is NULL, then nothing is done
  */
 void KDTreeDestroy(KDTreeNode root);
+
+
 
 #endif /* KDTREE_H_ */

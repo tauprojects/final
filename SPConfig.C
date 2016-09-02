@@ -114,6 +114,16 @@ int spConfigGetNumOfImages(const SPConfig config, SP_CONFIG_MSG* msg) {
 	return config->spNumOfImages;
 }
 
+
+int spConfigGetNumSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg) {
+	assert(msg!=NULL);
+	if (config == NULL) {
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return -1;
+	}
+	return config->spNumOfSimilarImages;
+}
+
 int spConfigGetNumOfFeatures(const SPConfig config, SP_CONFIG_MSG* msg) {
 	assert(msg!=NULL);
 	if (config == NULL) {
@@ -129,6 +139,15 @@ int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg) {
 		return -1;
 	}
 	return config->spPCADimension;
+}
+
+int spConfigGetspKNN(const SPConfig config, SP_CONFIG_MSG* msg) {
+	assert(msg!=NULL);
+	if (config == NULL) {
+		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return -1;
+	}
+	return config->spKNN;
 }
 
 SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
@@ -160,8 +179,7 @@ void printConstrainMsg(const char* filename, int line) {
 }
 
 bool getSpExtractionMode(SPConfig config) {
-	puts("Im in extract");
-	return true;
+	return config->spExtractionMode;
 }
 SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config) {
 	if (config == NULL || pcaPath == NULL)
@@ -189,6 +207,12 @@ SP_CONFIG_MSG genarateFeatPath(char* featPath, const SPConfig config, int index)
 	strcat(featPath, ".feat");
 	return SP_CONFIG_SUCCESS;
 }
+
+SP_SPLIT_METHOD getSpSplitMethod(const SPConfig config){
+	return config->spKDTreeSplitMethod;
+
+}
+
 void configMapper(char* key, char* val, SPConfig config) {
 
 	if (strcmp(key, "spImagesDirectory") == 0) {

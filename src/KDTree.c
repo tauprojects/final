@@ -64,23 +64,22 @@ void kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
 		spBPQueueEnqueue(bpq,spListElementCreate(dist,index));
 		return ;
 	}
+    bool isLeft=true;
 	if(spPointGetAxisCoor(point,curr->dim)<=curr->val){
 		kNearestNeighbors(bpq,curr->left,point);
-		double temp = ((curr->val)-spPointGetAxisCoor(point,curr->dim));
-		temp=temp*temp;
-		if(!spBPQueueIsFull(bpq) || temp<spBPQueueMaxValue(bpq)){
-			kNearestNeighbors(bpq,curr->right,point);
-		}
 	}
 	else{
+        isLeft=false;
 		kNearestNeighbors(bpq,curr->right,point);
-		double temp = ((curr->val)-spPointGetAxisCoor(point,curr->dim));
-		temp=temp*temp;
-		if(!spBPQueueIsFull(bpq) || temp<spBPQueueMaxValue(bpq)){
-			kNearestNeighbors(bpq,curr->left,point);
-		}
-	}
-
+    }
+    double temp = ((curr->val)-spPointGetAxisCoor(point,curr->dim));
+    temp=temp*temp;
+    if(!spBPQueueIsFull(bpq) || temp<spBPQueueMaxValue(bpq)){
+        if(isLeft)
+            kNearestNeighbors(bpq,curr->right,point);
+        else
+            NearestNeighbors(bpq,curr->left,point);
+    }
 }
 
 void KDTreeDestroy(KDTreeNode root){

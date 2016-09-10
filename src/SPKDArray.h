@@ -53,9 +53,37 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight);
  * if array is NULL nothing happens.
  */
 void spKDArrayDestroy(KDArray kdArr);
+
+/**
+ * Getter of KDArry size
+ * @param kdarr - source kdarry
+ * @return 
+ * KdArry's size
+ */
 int KDArrayGetSize(KDArray kdarr);
+
+/**
+ * Getter for first element in KDArray
+ *
+ * @pararm
+ * kdarry - the source kdarry
+ * @return
+ * pointter to the first SPPount in kdarry
+ */
 SPPoint* KDArrayGetFirst(KDArray kdarr);
-int calcCoor(KDArray kdarr,SP_SPLIT_METHOD extractionMode, int i);
+
+/**
+ * Getter for the next coordinate the kdarry split with.
+ *
+ * @pararm
+ * kdarry - the source kdarry
+ * splitMethod - the relevant way the kdarry split with
+ * i - privious coordinate the kdarry split with
+ *      in the first time i will define to (-1)
+ * @return
+ * Next coordinite the kdarry split with
+ */
+int calcCoor(KDArray kdarr,SP_SPLIT_METHOD splitMethod, int i);
 int maxDiff(KDArray kdarr);
 int KDArrayGetAxis(KDArray kdarr,int i,int j);
 

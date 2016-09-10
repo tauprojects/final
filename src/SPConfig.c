@@ -2,12 +2,12 @@
 #include <assert.h>
 
 struct sp_config_t {
-	char spImagesDirectory[MAXLINE];
-	char spImagesPrefix[MAXLINE];
-	char spImagesSuffix[MAXLINE];
+	char spImagesDirectory[MAXLEN];
+	char spImagesPrefix[MAXLEN];
+	char spImagesSuffix[MAXLEN];
 	int spNumOfImages;
 	int spPCADimension;
-	char spPCAFilename[MAXLINE];
+	char spPCAFilename[MAXLEN];
 	int spNumOfFeatures;
 	bool spExtractionMode;
 	int spNumOfSimilarImages;
@@ -15,7 +15,7 @@ struct sp_config_t {
 	int spKNN;
 	bool spMinimalGui;
 	int spLoggerLevel;
-	char spLoggerFilename[MAXLINE];
+	char spLoggerFilename[MAXLEN];
 };
 
 #define getName(var) #var
@@ -52,12 +52,12 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg){
 	defualtVal(config);               //set default vals on the config file
 	//temporary variables
 	int lineNum=0;
-	char key[MAXLINE];
-	char val[MAXLINE];
-	char tempLine[MAXLINE];
+	char key[MAXLEN];
+	char val[MAXLEN];
+	char tempLine[MAXLEN];
 	char* temp;
 	bool isValidLine=true;
-	while (fgets(tempLine,MAXLINE, fp) != NULL) {
+	while (fgets(tempLine,MAXLEN, fp) != NULL) {
 		if(isCommentLine(tempLine)){
 			lineNum++;
 			continue;
@@ -112,8 +112,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 		} else
 			strcpy(config->spImagesDirectory, val);
 	}
-	//	puts("Check1");
-	//fflush(NULL);
 	else if (strcmp(key, "spImagesPrefix") == 0) {
 		if (hasSpace(val)) {
 			printError(filename, lineNum, ERROR_VALUE, "spImagesPrefix");
@@ -121,8 +119,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 		} else
 			strcpy(config->spImagesPrefix, val);
 	}
-	//	puts("Check2");
-	//fflush(NULL);
 	else if (strcmp(key, "spImagesSuffix") == 0) {
 		if (strcmp(val, ".bmp") == 0 || strcmp(val, ".jpg") == 0
 				|| strcmp(val, ".png") == 0 || strcmp(val, ".gif") == 0) {
@@ -132,8 +128,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 			return false;
 		}
 	}
-	//	puts("Check3");
-	//fflush(NULL);
 	else if (strcmp(key, "spNumOfImages") == 0) {
 		if (isNum(val)) {
 			int intVal = atoi(val);
@@ -147,8 +141,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 			return false;
 		}
 	}
-	//	puts("Check4");
-	//fflush(NULL);
 	else if (strcmp(key, "spPCADimension") == 0) {
 		if (isNum(val)) {
 			int intVal = atoi(val);
@@ -162,8 +154,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 			return false;
 		}
 	}
-	//	puts("Check5");
-	//fflush(NULL);
 	else if (strcmp(key, "spPCAFilename") == 0) {
 		if (hasSpace(val)) {
 			printError(filename, lineNum, ERROR_VALUE, "spPCAFilename");
@@ -390,7 +380,7 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
 	if (index >= config->spNumOfImages)
 		return SP_CONFIG_INDEX_OUT_OF_RANGE;
 	strcpy(imagePath, "");
-	char* i = (char*) malloc(sizeof(char) * MAXLINE);
+	char* i = (char*) malloc(sizeof(char) * MAXLEN);
 	if (i == NULL) {
 		fflush(NULL);
 		return SP_CONFIG_ALLOC_FAIL;
@@ -409,7 +399,7 @@ SP_CONFIG_MSG spConfigGetFeatsPath(char* featPath, const SPConfig config,int ind
 	if (index >= config->spNumOfImages)
 			return SP_CONFIG_INVALID_ARGUMENT;
 	strcpy(featPath, "");
-	char* i = (char*) malloc(sizeof(char) * MAXLINE);
+	char* i = (char*) malloc(sizeof(char) * MAXLEN);
 	if (i == NULL) {
 		fflush(NULL);
 		return SP_CONFIG_ALLOC_FAIL;
@@ -467,6 +457,7 @@ bool spConfigIsExtractionMode(const SPConfig config, SP_CONFIG_MSG* msg) {
 	assert(msg!=NULL);
 	if (config == NULL) {
 		*msg = SP_CONFIG_INVALID_ARGUMENT;
+		return true; //Handling the Error in main function.
 	}
 	*msg = SP_CONFIG_SUCCESS;
 	if (config->spExtractionMode)

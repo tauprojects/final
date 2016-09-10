@@ -22,6 +22,11 @@
 /** Type for defining the array **/
 typedef struct sp_kdarray_t* KDArray;
 
+typedef enum sp_kdarray_msg_t {
+	SP_KDARRAY_FAIL_ALLOCATION,
+	SP_KDARRAY_FAIL,
+	SP_KDARRAY_SUCCESS
+} SP_KDARRAY_MSG;
 /**
  * Init KDArray to array pointer.
  * Given SSPoint arr in length of size

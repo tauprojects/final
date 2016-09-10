@@ -54,32 +54,47 @@ bool isLeaf(KDTreeNode curr){
 	else
 		return false;
 }
-void kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
-	if(curr==NULL){
-		return ;
-	}
+KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
+	if(curr==NULL)
+		return KD_TREE_INVALID_CURRENT;
 	if(isLeaf(curr)){
 		double dist = spPointL2SquaredDistance(point,curr->data[0]);
 		int index = spPointGetIndex(curr->data[0]);
-		spBPQueueEnqueue(bpq,spListElementCreate(index,dist));
-		return ;
+		SP_BPQUEUE_MSG bpeMsg = spBPQueueEnqueue(bpq,spListElementCreate(index,dist));
+		if(bpeMsg==SP_BPQUEUE_FULL || bpeMsg ==SP_BPQUEUE_SUCCESS){
+			return KD_TREE_SUCCESS;
+		}
+		else
+			return KD_TREE_INIT_FAIL;
 	}
     bool isLeft=true;
 	if(spPointGetAxisCoor(point,curr->dim)<=curr->val){
-		kNearestNeighbors(bpq,curr->left,point);
+		KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->left,point);
+		if(msg!=KD_TREE_SUCCESS)
+			return KD_TREE_INIT_FAIL;
+
 	}
 	else{
-        isLeft=false;
-		kNearestNeighbors(bpq,curr->right,point);
+		isLeft = false;
+		KD_TREE_MSG msg = kNearestNeighbors(bpq, curr->right, point);
+		if (msg != KD_TREE_SUCCESS)
+			return KD_TREE_INIT_FAIL;
     }
     double temp = ((curr->val)-spPointGetAxisCoor(point,curr->dim));
     temp=temp*temp;
     if(!spBPQueueIsFull(bpq) || temp<spBPQueueMaxValue(bpq)){
-        if(isLeft)
-            kNearestNeighbors(bpq,curr->right,point);
-        else
-        	kNearestNeighbors(bpq,curr->left,point);
+        if(isLeft){
+         	KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->right,point);
+    		if (msg != KD_TREE_SUCCESS)
+    			return KD_TREE_INIT_FAIL;
+        }
+        else{
+        	KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->left,point);
+    		if (msg != KD_TREE_SUCCESS)
+    			return KD_TREE_INIT_FAIL;
+        }
     }
+    return KD_TREE_SUCCESS;
 }
 
 void KDTreeDestroy(KDTreeNode root){

@@ -1,6 +1,11 @@
 #ifndef SPCONFIG_H_
 #define SPCONFIG_H_
 
+#define DEFAULT_ERROR_FILE_OPEN_MSG  "The default configuration file spcbir.config couldn’t be open\n"
+#define ERROR_FILE_OPEN_MSG			  "The configuration file %s couldn’t be open\n"
+#define INVALID_CMD_LINE_ERROR_MSG   "Invalid command line : use -c <config_filename>\n"
+#define INVALID_EXTRAC_ARG_MSG       "Invalid Extraction Mode Argument"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include "SPLogger.h"
@@ -13,7 +18,7 @@
 /**
  * A data-structure which is used for configuring the system.
  */
-#define MAXLINE 1025
+#define MAXLEN 1025
 typedef enum sp_config_msg_t {
 	SP_CONFIG_MISSING_DIR,
 	SP_CONFIG_MISSING_PREFIX,

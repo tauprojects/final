@@ -5,7 +5,6 @@
 #define MAX_PATH_LENGTH 1025
 #define MAXLEN 1025
 
-
 #include "SPImageProc.h"
 #include <cstdlib>
 #include <cstdio>
@@ -50,7 +49,7 @@ int main(int argc, char* argv[]) {
 	}
 	puts("checkpoint 2");
 	fflush(NULL);
-
+	toString(config);
 	nImages = spConfigGetNumOfImages(config, &msg); //A+B
 	nFeaturesPerImage = (int*) malloc(nImages * sizeof(int));
 	ImageProc imageProc = ImageProc(config);
@@ -72,8 +71,8 @@ int main(int argc, char* argv[]) {
 	puts("checkpoint 4 - Before the loop of feat Files");
 	fflush(NULL);
 	if (spConfigIsExtractionMode(config, &msg) && msg == 10) { //if extractionMode=true-->creating .feat files
-		for (int i = 0; i < numOfImg ;i++) {
-			printf("Inside the FeatFiles Loop: Itr Num: %d",i);
+		for (int i = 0; i < numOfImg; i++) {
+			printf("Inside the FeatFiles Loop: Itr Num: %d", i);
 			fflush(NULL);
 			msg = spConfigGetImagePath(temp, config, i);  //generate img path
 			puts(temp);
@@ -81,10 +80,10 @@ int main(int argc, char* argv[]) {
 //			if (msg != SP_CONFIG_SUCCESS)
 //				continue; //????????????????
 			resPoints = imageProc.getImageFeatures(temp, i, numOfFeats); //get img feat for the feat file
-			printf("Inside the FeatFiles Loop After IMGPROC: Itr Num: %d",i);
+			printf("Inside the FeatFiles Loop After IMGPROC: Itr Num: %d", i);
 			fflush(NULL);
-			createFeatFiles(config,temp,i,numOfFeats,resPoints);
-			for(int j=0;j<*numOfFeats;j++){
+			createFeatFiles(config, temp, i, numOfFeats, resPoints);
+			for (int j = 0; j < *numOfFeats; j++) {
 				spPointDestroy(resPoints[j]);
 			}
 			free(resPoints);
@@ -93,81 +92,87 @@ int main(int argc, char* argv[]) {
 	puts("checkpoint 4 - Before the loop of feat Files");
 	fflush(NULL);
 	//	Creation of point array with features of all images.
-	totalResPoints = createTotalFeatArray(config,numOfImg,dim,&sizeOfTotalFeat);
-		puts("\n checkpoint 5 - After Creating TotalResPoints Array");
-		fflush(NULL);
-		fflush(NULL);
+	totalResPoints = createTotalFeatArray(config, numOfImg, dim,
+			&sizeOfTotalFeat);
+	puts("\n checkpoint 5 - After Creating TotalResPoints Array");
+	fflush(NULL);
+	fflush(NULL);
 
-		//Creation of KDArray with all point features - with image attribute
-		kdarray = KdArrayInit(totalResPoints, sizeOfTotalFeat);
-		printf("\n\nCheck Print %d \n ",KDArrayGetSize(kdarray));
-		fflush(NULL);
-		for(int i=0;i<KDArrayGetSize(kdarray);i++){
-			spPointDestroy(totalResPoints[i]);
-		}
-		free(totalResPoints);
-		//Creation of KDTree DB
-		SP_SPLIT_METHOD method;
-		spConfigGetKDSplitMethod(&method,config);
-		puts("checkpoint 6 - After Creating KDarray");
-		fflush(NULL);
+	//Creation of KDArray with all point features - with image attribute
+	kdarray = KdArrayInit(totalResPoints, sizeOfTotalFeat);
+	printf("\n\nCheck Print %d \n ", KDArrayGetSize(kdarray));
+	fflush(NULL);
+	for (int i = 0; i < KDArrayGetSize(kdarray); i++) {
+		spPointDestroy(totalResPoints[i]);
+	}
+	free(totalResPoints);
+	//Creation of KDTree DB
+	SP_SPLIT_METHOD method;
+	spConfigGetKDSplitMethod(&method, config);
+	puts("checkpoint 6 - After Creating KDarray");
+	fflush(NULL);
 
-		root = kdTreeInit(kdarray, method, -1);
-		fflush(NULL);
-		puts("checkpoint 7 - After Creating KDTree");
-		fflush(NULL);
-		spKDArrayDestroy(kdarray);
+	root = kdTreeInit(kdarray, method, -1);
+	fflush(NULL);
+	puts("checkpoint 7 - After Creating KDTree");
+	fflush(NULL);
+	spKDArrayDestroy(kdarray);
 //---------------------------------------------------------------------//
-		//Search By Query
-			puts("Please enter an image path:");
-			fflush(NULL);
-			scanf("%s", &imagePath);
-			fflush(NULL);
-			while (strcmp(imagePath, "exit") != 0) {
-				struct featHits* countHits = (featHits*) malloc(
-						sizeof(featHits) * numOfImg);
+	//Search By Query
+	puts("Please enter an image path:");
+	fflush(NULL);
+	scanf("%s", &imagePath);
+	fflush(NULL);
+	while (strcmp(imagePath, "exit") != 0) {
+		struct featHits* countHits = (featHits*) malloc(
+				sizeof(featHits) * numOfImg);
 //				// Init of Hits
-				for (int i = 0; i < numOfImg; i++) {
-					countHits[i].hits = 0;
-					countHits[i].index = i;
-				}
-				resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX, numOfFeats); //get img feat for the feat file
-				puts("CheckPoint 8 - after ImgProc query");
-				fflush(NULL);
+		for (int i = 0; i < numOfImg; i++) {
+			countHits[i].hits = 0;
+			countHits[i].index = i;
+		}
+		resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX,
+				numOfFeats); //get img feat for the feat file
+		puts("CheckPoint 8 - after ImgProc query");
+		fflush(NULL);
+		//work until here,thanks.
+		for (int i = 0; i < *numOfFeats; i++) {
+			kNearestNeighbors(bpq, root, resPoints[i]);
 
-				for (int i = 0; i < *numOfFeats; i++) {
-					kNearestNeighbors(bpq, root, resPoints[i]);
-					puts("CheckPoint 9 - after Nearesttt query");
-					fflush(NULL);
-					//work until here,thanks.
-//					for (int j = 0; j < spConfigGetKNN(config, &msg); j++) {
-//						int index = spListElementGetIndex(spBPQueuePeek(bpq)); //Creates Copy - Remember to destroy.
-//						countHits[index].hits++;
-//						spBPQueueDequeue(bpq);
-					}
-				}
+			for (int j = 0; j < spKNN; j++) {
+				int index = spBPQueuePeekIndex(bpq); //Creates Copy - Remember to destroy.
+				countHits[index].hits++;
+				spBPQueueDequeue(bpq);
+			}
+		}
+		fflush(NULL);
+		puts("CheckPoint 9 - after Nearesttt query");
+		fflush(NULL);
 		//		Sorting and getting the K best hits
-//				qsort((void*) countHits, numOfImg, sizeof(featHits), hitsComp);
+		qsort((void*) countHits, numOfImg, sizeof(featHits), hitsComp);
 
 		//		Show Image
-//				if (spConfigMinimalGui(config, &msg)) {
-//					for (int i = 0; i < numSimilarImg; i++) {
-//						msg = spConfigGetImagePath(imagePath, config, countHits[i].index);
-//						imageProc.showImage(imagePath);
-//					}
-//				} else {
-//					for (int i = 0; i < numSimilarImg; i++) {
-//						printf("%d Printing the Pic", countHits[i].index);
-//					}
-//				}
-
-				puts("Please enter an image path:");
-				fflush(NULL);
-				scanf("%s", &imagePath);
-				fflush(NULL);
+		if (spConfigMinimalGui(config, &msg)) {
+			for (int i = 0; i < numSimilarImg; i++) {
+				msg = spConfigGetImagePath(imagePath, config,
+						countHits[i].index);
+				imageProc.showImage(imagePath);
+				printf("%d", i);
 			}
-			//Exit Msg-Logger
-		//	destroyAll();
+		} else {
+			for (int i = 0; i < numSimilarImg; i++) {
+				printf("%d Printing the Pic\n", countHits[i].index);
+			}
+		}
+
+		fflush(NULL);
+		puts("Please enter an image path:");
+		fflush(NULL);
+		scanf("%s", &imagePath);
+		fflush(NULL);
+	}
+	//Exit Msg-Logger
+	//	destroyAll();
 	return 0;
 }
 

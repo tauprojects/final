@@ -182,4 +182,6 @@ bool spBPQueueIsEmpty(SPBPQueue source);
  */
 bool spBPQueueIsFull(SPBPQueue source);
 
+
+int spBPQueuePeekIndex(SPBPQueue source);
 #endif

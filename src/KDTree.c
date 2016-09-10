@@ -61,7 +61,7 @@ void kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
 	if(isLeaf(curr)){
 		double dist = spPointL2SquaredDistance(point,curr->data[0]);
 		int index = spPointGetIndex(curr->data[0]);
-		spBPQueueEnqueue(bpq,spListElementCreate(dist,index));
+		spBPQueueEnqueue(bpq,spListElementCreate(index,dist));
 		return ;
 	}
     bool isLeft=true;
@@ -78,7 +78,7 @@ void kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
         if(isLeft)
             kNearestNeighbors(bpq,curr->right,point);
         else
-            NearestNeighbors(bpq,curr->left,point);
+        	kNearestNeighbors(bpq,curr->left,point);
     }
 }
 

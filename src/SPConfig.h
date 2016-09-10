@@ -5,16 +5,15 @@
 #include <stdio.h>
 #include "SPLogger.h"
 #include <stdbool.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include <ctype.h>
-#include <time.h>
 /**
  * A data-structure which is used for configuring the system.
  */
-
+#define MAXLINE 1025
 typedef enum sp_config_msg_t {
 	SP_CONFIG_MISSING_DIR,
 	SP_CONFIG_MISSING_PREFIX,
@@ -28,18 +27,17 @@ typedef enum sp_config_msg_t {
 	SP_CONFIG_INDEX_OUT_OF_RANGE,
 	SP_CONFIG_SUCCESS
 } SP_CONFIG_MSG;
-
-typedef enum sp_kd_split_method{
+typedef enum sp_split_method_t {
 	RANDOM,
 	MAX_SPREAD,
 	INCREMENTAL
-}SP_SPLIT_METHOD;
+} SP_SPLIT_METHOD;
 
-typedef enum config_error_type{
-	INVALID_LINE,
-	INVALID_VALUE,
-	PARAMETER_NOT_SET
-}CFG_ERROR_TYPE;
+typedef enum sp_config_error_t{
+	ERROR_VALUE,
+	ERROE_LINE,
+	UNSET_PARAM
+}SP_CONFIG_ERROR;
 
 typedef struct sp_config_t* SPConfig;
 
@@ -188,26 +186,9 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
  */
 void spConfigDestroy(SPConfig config);
 
-/*
- *
- * gets method
- */
-SP_CONFIG_MSG spConfigGetKDSplitMethod(SP_SPLIT_METHOD* method, const SPConfig config);
-
-/**
- * gets .feats
- */
-SP_CONFIG_MSG spConfigGetFeatsPath(char* featsPath, const SPConfig config,
-		int index);
-
-/**
- * gets spKNN
- */
 int spConfigGetKNN(const SPConfig config, SP_CONFIG_MSG* msg);
-
-/**
- * SIMILAR IMAGES
- *
- */
+SP_CONFIG_MSG spConfigGetKDSplitMethod(SP_SPLIT_METHOD* method, const SPConfig config);
+SP_CONFIG_MSG spConfigGetFeatsPath(char* featsPath, const SPConfig config,int index);
 int spConfigGetSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
+void toString(SPConfig config);
 #endif /* SPCONFIG_H_ */

@@ -3,7 +3,6 @@
 #include <SPConfig.h>
 #include <SPKDarray.h>
 #include <SPBPriorityQueue.h>
-#include <SPConfig.h>
 
 /**
  * KDTree Summary

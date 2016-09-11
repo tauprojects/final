@@ -98,7 +98,15 @@ KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
 }
 
 void KDTreeDestroy(KDTreeNode root){
-	//To-Do
+	if(root->data!=NULL){
+		spPointDestroy(root->data[0]);
+		free(root);
+		return ;
+	}
+	KDTreeDestroy(root->left);
+	KDTreeDestroy(root->right);
+	free(root->left);
+	free(root->right);
 }
 
 

@@ -55,7 +55,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 		}
 		tempFile = fopen(path, "rt");   //getting feat file
 		if(!tempFile){
-			puts(SP_CONFIG_CANNOT_OPEN_FILE);
+			puts("SP_CONFIG_CANNOT_OPEN_FILE");
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);
@@ -81,7 +81,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 		spConfigGetFeatsPath(path, config, i);
 		tempFile = fopen(path, "rt");   //getting feat file
 		if(!tempFile){
-			puts(SP_CONFIG_CANNOT_OPEN_FILE);
+			puts("SP_CONFIG_CANNOT_OPEN_FILE");
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);

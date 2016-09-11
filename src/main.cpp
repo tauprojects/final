@@ -140,13 +140,17 @@ int main(int argc, char* argv[]) {
 		return 1; //exit(1)
 	}
 	//Request Query Image Path until 'exit' enter
-	while (strcmp(imagePath, "exit") != 0) {
+	while (strcmp(imagePath, "<>") != 0) {
 		for (int i = 0; i < numOfImg; i++) {
 			countHits[i].hits = 0;
 			countHits[i].index = i;
 		}
 		//Extracting Image features for query image into SPPoint Array.
 		resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX,numOfFeats);
+		if(resPoints==NULL){
+			puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+			return 1; //exit(1)
+		}
 
 		//Searching for nearest neighbors of each feature
 		for (int i = 0; i < *numOfFeats; i++) {
@@ -189,8 +193,8 @@ int main(int argc, char* argv[]) {
 		fflush(NULL);
 	}
 	free(countHits);
-	//Exit Msg-Logger
-	//	destroyAll();
+	KDTreeDestroy(root);
+	free(root);
 	return 0;
 }
 

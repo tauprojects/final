@@ -1,8 +1,8 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
-#include <SPConfig.h>
-#include <SPKDarray.h>
-#include <SPBPriorityQueue.h>
+#include "SPConfig.h"
+#include "SPKDarray.h"
+#include "SPBPriorityQueue.h"
 
 /**
  * KDTree Summary

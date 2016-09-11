@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <KDTree.h>
-#include <SPConfig.h>
+#include "SPConfig.h"
+#include "SPPoint.h"
 #define FAIL_ALOC_MSG "Failed to allocate"
 
 

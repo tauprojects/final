@@ -1,7 +1,7 @@
 #ifndef SPKDARRAY_H_
 #define SPKDARRAY_H_
-#include <SPPoint.h>
-#include <SPConfig.h>
+#include "SPPoint.h"
+#include "SPConfig.h"
 /**
  * SPKDArray Summary
  * Encapsulates a point with variable length dimension. The coordinates

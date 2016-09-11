@@ -143,7 +143,7 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 		index = KDArrayGetAxis(kdArr,coor,i+KDArrayGetSize(*kdLeft));
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 		if(tempArr[i]==NULL){
-			puts(SP_KDARRAY_FAIL);
+			puts("SP_KDARRAY_FAIL");
 		}
 	}
 	*kdRight=KdArrayInit(tempArr,tempSize);

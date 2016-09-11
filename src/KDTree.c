@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <KDTree.h>
+#include "KDTree.h"
 
 
 //define an INVALID value for the edge case

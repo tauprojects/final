@@ -1,4 +1,4 @@
-#include <SPConfig.h>
+#include "SPConfig.h"
 #include <assert.h>
 
 struct sp_config_t {

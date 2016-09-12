@@ -1,7 +1,7 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
 #include "SPConfig.h"
-#include "SPKDarray.h"
+#include "SPKDArray.h"
 #include "SPBPriorityQueue.h"
 
 /**

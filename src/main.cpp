@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	KDTreeNode root;
 	int* numOfFeats = (int*) malloc(sizeof(int)); //Temporary int pointer for the creating of .feat files
 	if(numOfFeats==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return 1; //exit(1)
 	}
 	int sizeOfTotalFeat;
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 	//Creating new BPQueue MaxSize spKNN
 	SPBPQueue bpq = spBPQueueCreate(spKNN);
 	if(bpq==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return 1; //exit(1)
 	}
 
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
 		   //Extracting Image features for each image into SPPoint Array.
 			resPoints = imageProc.getImageFeatures(imagePath, i, numOfFeats); //get img feat for the feat file
 			if(resPoints==NULL){
-				puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+				puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 				return 1; //exit(1)
 			}
 
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 	//Declaring countHits for count similar features per image.
 	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
 	if(countHits==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return 1; //exit(1)
 	}
 	//Request Query Image Path until 'exit' enter
@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 		//Extracting Image features for query image into SPPoint Array.
 		resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX,numOfFeats);
 		if(resPoints==NULL){
-			puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+			puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 			return 1; //exit(1)
 		}
 

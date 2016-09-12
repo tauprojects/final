@@ -1,6 +1,6 @@
 #define MAXLEN 1025
 
-#include<main_aux.h>
+#include "main_aux.h"
 
 SP_CONFIG_MSG createFeatFiles(SPConfig config, char* path,int i,int* numOfFeats,SPPoint* resPoints ){
 	FILE *tempFile;  //Temporary file for the creating of .feat files
@@ -33,18 +33,18 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 	SP_CONFIG_MSG msg;
 	char* path = (char*) malloc(sizeof(char) * MAXLEN);
 	if(path==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return NULL; //exit(1)
 	}
 	int size = 0,j,k,numOfFeat;
 	double* valArr = (double*)malloc(sizeof(double)*dim);
 	if(valArr==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return NULL; //exit(1)
 	}
 	char* tempChar = (char*)malloc(sizeof(char)*MAXLEN);
 	if(tempChar==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return NULL; //exit(1)
 	}
 	for (int i = 0; i < numOfImg; i++) {
@@ -72,7 +72,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 	*sizeOfTotalFeat=size;
 	SPPoint* totalResPoints = (SPPoint*)malloc(sizeof(SPPoint) *size);
 	if(totalResPoints==NULL){
-		puts(FAIL_ALOC_MSG); //not by the ben-dod. HEREEE
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
 		return NULL; //exit(1)
 	}
 	size=0;

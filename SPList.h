@@ -258,10 +258,5 @@ void spListDestroy(SPList list);
  * @param iterator The name of the variable to hold the next list element
  * @param list the list to iterate over
  */
-#define SP_LIST_FOREACH(type,iterator,list) \
-	for(type iterator = listGetFirst(list) ; \
-		iterator ;\
-		iterator = listGetNext(list))
-
 
 #endif /* SPLIST_H_ */

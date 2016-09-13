@@ -1,7 +1,8 @@
 #ifndef KDTREE_H_
 #define KDTREE_H_
-#include <SPKDarray.h>
-#include <SPBPriorityQueue.h>
+#include "SPConfig.h"
+#include "SPKDArray.h"
+#include "SPBPriorityQueue.h"
 
 /**
  * KDTree Summary
@@ -21,10 +22,11 @@
 typedef struct kd_tree_node* KDTreeNode;
 
 
-typedef enum sp_list_msg_t {
+typedef enum sp_tree_msg_t {
 	KD_TREE_SUCCESS,
 	KD_TREE_NULL_ARGUMENT,
 	KD_TREE_INVALID_CURRENT,
+	KD_TREE_INIT_FAIL
 } KD_TREE_MSG;
 /**
  * Creates a new KDTree from specific KDArray
@@ -38,8 +40,7 @@ typedef enum sp_list_msg_t {
  */
 KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD splitMethod,int i);
 
-
-KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode root, SPPoint point);
+KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point);
 
 bool isLeaf(KDTreeNode root);
 

@@ -187,6 +187,7 @@ SPList spBPQueueGetList(SPBPQueue source){
 	return source->qList;
 }
 
-
-
+int spBPQueuePeekIndex(SPBPQueue source){
+	return spListElementGetIndex(spListGetFirst(source->qList));
+}
 

@@ -4,18 +4,13 @@
  *  Created on: May 20, 2016
  *      Author: MatanGizunterman and LironGazit
  */
-//Check how to nake an helper functions and constant libreary
-//Check with valgrind leak of memory
-//Config struct-kdarray-kdtree-nodestuct-tempstruct
-//make a destroy function for each class
-//edge cases and checking allocataion of each type.
-//arranging the header files + public\private data
-//use with the logger
-#include "SPKDarray.h"
+
+#include "SPKDArray.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
+#include <math.h>
 
 //Declarations of helper func
 int round_div(int dividend);
@@ -47,80 +42,116 @@ int cmpfunc(const void * A, const void* B){
 }
 
 //Empty Array'Size of 0 array and other mikrey katze
-SP_CONFIG_MSG KdArrayInit(KDArray kdarray,SPPoint* arr, int size){
-	if(kdarray==NULL || arr==NULL)
-		return SP_CONFIG_INVALID_ARGUMENT;
-	kdarray->size=size;
-	kdarray->arr=(SPPoint*)malloc(sizeof(SPPoint)*size);
-	//allocate array
-	if(kdarray->arr==NULL){
-		fflush(NULL);
-		return SP_CONFIG_ALLOC_FAIL;
-	}
-	for(int i=0;i<size;i++){
-		kdarray->arr[i]=spPointCopy(arr[i]);
-	}
-	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size); //creating a temporary arr
-	if(temparr==NULL){
-		fflush(NULL);
-		return SP_CONFIG_ALLOC_FAIL;
+KDArray KdArrayInit(SPPoint* arr, int size){
+	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
+	if(kdarray==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
 	}
 	kdarray->dim=spPointGetDimension(arr[0]);
 	kdarray->kdDB  =(int**)malloc(sizeof(int*)*kdarray->dim);
 	if(kdarray->kdDB==NULL){
-		fflush(NULL);
-		return SP_CONFIG_ALLOC_FAIL;
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
 	}
 	for(int i=0;i<kdarray->dim;i++){
 		kdarray->kdDB[i]=(int*)malloc(sizeof(int)*size);
 		if(kdarray->kdDB[i]==NULL){
-			fflush(NULL);
-			return SP_CONFIG_ALLOC_FAIL;
+			puts("SP_KDARRAY_FAIL_ALLOCATION");
 		}
 	}
+	if(kdarray==NULL || arr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
+	}
+	kdarray->size=size;
+	kdarray->arr=(SPPoint*)malloc(sizeof(SPPoint)*size);
+	if(kdarray->arr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
+	}
+
+	//allocate array
+	if(kdarray->arr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+	}
+	for(int i=0;i<size;i++){
+		kdarray->arr[i]=spPointCopy(arr[i]);
+	}
+
+	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size); //creating a temporary arr
+	if(temparr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+	}
+	if(kdarray->kdDB==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+	}
+
    //Copy PointArray
 	for(int i=0;i<kdarray->dim;i++){
 		for(int j=0;j<size;j++){
 			temparr[j].data=spPointGetAxisCoor(arr[j],i);
-			temparr[j].index=i;
+			temparr[j].index=j;
 		}
 		qsort((void*)temparr, size, sizeof(temparr[0]), cmpfunc);
 		for(int j=0;j<size;j++){
 			kdarray->kdDB[i][j]=temparr[j].index;
 		}
-
 	}
-	return SP_CONFIG_SUCCESS;
+
+	return kdarray;
 }
 
+int KDArrayGetAxis(KDArray kdarr,int i,int j){
+	int result = kdarr->kdDB[i][j];
+//	printf("\nresult: %d",result);
+	return result;
+}
 
 //Split Method - preduces two arrays into pointed arrays
-double Split(KDArray kdArr, int coor,KDArray kdLeft ,KDArray kdRight){
+double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 	int tempSize;
-	double median;
+	double median=0;
 	//Initialize left array
 	tempSize = round_div(kdArr->size);
 	SPPoint* tempArr = (SPPoint*)malloc(sizeof(SPPoint)*tempSize);
+	if(tempArr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+	}
 	for(int i=0,index;i<tempSize;i++){
-		index =kdArr->kdDB[coor][i];
+		index =KDArrayGetAxis(kdArr,coor,i);
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 	}
-	KdArrayInit(kdLeft,tempArr,tempSize);
-	for(int j=0;j<tempSize;j++)
-		spPointDestroy(tempArr[j]);
-	//Initialize right array
-	tempSize = kdArr->size/2;
-	tempArr = (SPPoint*)malloc(sizeof(SPPoint)*tempSize);
-	int medianInded=kdArr->kdDB[coor][(kdLeft->size)-1];
-	median = spPointGetAxisCoor(kdArr->arr[medianInded],coor);
-	for(int i=0,index;i<tempSize;i++){
-		index =kdArr->kdDB[coor][i+(kdLeft->size)];
-		tempArr[i]=spPointCopy(kdArr->arr[index]);
-	}
-	KdArrayInit(kdRight,tempArr,tempSize);
-	for(int j=0;j<tempSize;j++)
-		spPointDestroy(tempArr[j]);
 
+	*kdLeft=KdArrayInit(tempArr,tempSize);
+	for(int j=0;j<tempSize;j++)
+		spPointDestroy(tempArr[j]);
+	free(tempArr);
+	//Initialize right array
+	tempSize = (kdArr->size)/2;
+	tempArr = (SPPoint*)malloc(sizeof(SPPoint)*tempSize);
+	if(tempArr==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+	}
+	int index = KDArrayGetSize(*kdLeft)-1;
+	int medindex;
+	medindex=KDArrayGetAxis(kdArr,coor,index);
+	median = spPointGetAxisCoor(kdArr->arr[medindex],coor);
+
+	for(int i=0,index;i<tempSize;i++){
+		index = KDArrayGetAxis(kdArr,coor,i+KDArrayGetSize(*kdLeft));
+		tempArr[i]=spPointCopy(kdArr->arr[index]);
+		if(tempArr[i]==NULL){
+			puts("SP_KDARRAY_FAIL");
+		}
+	}
+	*kdRight=KdArrayInit(tempArr,tempSize);
+	if(*kdRight==NULL){
+		return (double)INFINITY;
+	}
+	for(int j=0;j<tempSize;j++)
+			spPointDestroy(tempArr[j]);
+	free(tempArr);
 	return median;
 }
 
@@ -133,7 +164,7 @@ void spKDArrayDestroy(KDArray kdArr){
 	free(kdArr->arr);
 	free(kdArr->kdDB);
 }
-
+//
 int KDArrayGetSize(KDArray kdarr){
 	return kdarr->size;
 }
@@ -184,7 +215,6 @@ int maxDiff(KDArray kdarr){
 	}
 	return maxCoor;
 }
-
 
 
 

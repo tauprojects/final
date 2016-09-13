@@ -1,15 +1,24 @@
 #ifndef SPCONFIG_H_
 #define SPCONFIG_H_
 
+#define DEFAULT_ERROR_FILE_OPEN_MSG  "The default configuration file spcbir.config couldn’t be open\n"
+#define ERROR_FILE_OPEN_MSG			  "The configuration file %s couldn’t be open\n"
+#define INVALID_CMD_LINE_ERROR_MSG   "Invalid command line : use -c <config_filename>\n"
+#define INVALID_EXTRAC_ARG_MSG       "Invalid Extraction Mode Argument"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include "SPLogger.h"
-
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+#include <ctype.h>
 /**
  * A data-structure which is used for configuring the system.
  */
-
-#define MAXLEN 1024
+#define MAXLEN 1025
 typedef enum sp_config_msg_t {
 	SP_CONFIG_MISSING_DIR,
 	SP_CONFIG_MISSING_PREFIX,
@@ -28,6 +37,13 @@ typedef enum sp_split_method_t {
 	MAX_SPREAD,
 	INCREMENTAL
 } SP_SPLIT_METHOD;
+
+typedef enum sp_config_error_t{
+	ERROR_VALUE,
+	ERROE_LINE,
+	UNSET_PARAM
+}SP_CONFIG_ERROR;
+
 typedef struct sp_config_t* SPConfig;
 
 /**
@@ -174,9 +190,10 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
  * If config == NULL nothig is done.
  */
 void spConfigDestroy(SPConfig config);
-int spConfigGetNumSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
-SP_CONFIG_MSG genarateFeatPath(char* featPath, const SPConfig config, int index);
-SP_SPLIT_METHOD getSpSplitMethod(const SPConfig config);
-int spConfigGetspKNN(const SPConfig config, SP_CONFIG_MSG* msg);
+
+int spConfigGetKNN(const SPConfig config, SP_CONFIG_MSG* msg);
+SP_CONFIG_MSG spConfigGetKDSplitMethod(SP_SPLIT_METHOD* method, const SPConfig config);
+SP_CONFIG_MSG spConfigGetFeatsPath(char* featsPath, const SPConfig config,int index);
+int spConfigGetSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
 void toString(SPConfig config);
 #endif /* SPCONFIG_H_ */

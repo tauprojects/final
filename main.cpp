@@ -1,108 +1,201 @@
-/*
- * main.cpp
- *
- *  Created on: Jul 23, 2016
- *      Author: Liron
- */
 
-#include <iostream>
-#include <SPImageProc.h>
-extern "C"{
-	#include <main_aux.h>
+
+#define DEFAULT_FILE "spcbir.config"
+
+#include "SPImageProc.h"
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+extern "C" {
+#include "main_aux.h"
+#include "SPBPriorityQueue.h"
+#include "SPLogger.h"
+#include "SPPoint.h"
+#include "SPListElement.h"
+#include "KDTree.h"
 }
+using namespace sp;
 
-
-int main() {
-	const char* filename = "C:/dev/cproject/final/myconfig.config"; //Argument***
-	SP_CONFIG_MSG msg;   //Temporary msg
-	SPConfig config = spConfigCreate(filename, &msg);   //Create config object
-	char* path = (char*) malloc(sizeof(char) * MAX_LENGTH_PATH); //Temporary path
-	FILE *tempFile;  //Temporary file for the creating of .feat files
-	SPPoint* resPoints;  //Temporary SPPoint for the creating of .feat files
-
-	sp::ImageProc imgP(config);   //Creates new instance if ImageProc
-//	Total Featrues SPPoints Array
-	SPPoint* totalResPoints = (SPPoint*) malloc(sizeof(SPPoint));
-
-	int sizeOfTotalFeat;
-	int dim = spConfigGetPCADim(config, &msg);
+int main(int argc, char* argv[]) {
+	//Declaring and Initializing Variable and Objects
+	SP_CONFIG_MSG msg; 				 //msg pointer
+	SPConfig config;  				 //config struct instance
+	char imagePath[MAXLEN];	    //temporary path variable
+	SP_SPLIT_METHOD method;
+	SPPoint* resPoints;				//temporary point array for each img
+	SPPoint* totalResPoints;		//Point Array for all features
 	KDArray kdarray;
 	KDTreeNode root;
-	int numSimilarImg = spConfigGetNumSimilarImages(config, &msg);
-	int spKNN = spConfigGetspKNN(config, &msg);
-	int numOfImg = spConfigGetNumOfImages(config, &msg);
 	int* numOfFeats = (int*) malloc(sizeof(int)); //Temporary int pointer for the creating of .feat files
-	SPBPQueue bpq = spBPQueueCreate(spKNN);
-	//	toString(config);
+	if(numOfFeats==NULL){
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		return 1; //exit(1)
+	}
+	int sizeOfTotalFeat;
 
-
-	//Enum Values comparsion - need to get done
-	//Extraction Mode - Creation of .feat files.
-	if (spConfigIsExtractionMode(config, &msg) && msg == 10) { //if extractionMode=true-->creating .feat files
-		for (int i = 0; i < numOfImg && msg == 10;i++) {
-			msg = spConfigGetImagePath(path, config, i);  //generate img path
-			if (msg != SP_CONFIG_SUCCESS)
-				continue; //????????????????
-			resPoints = imgP.getImageFeatures(path, i, numOfFeats); //get img feat for the feat file
-			createFeatFiles(config,path,i,numOfFeats,resPoints);
-
-		}
-
+	//Checking argument state
+	if (argc == 1) {
+		config = spConfigCreate(DEFAULT_FILE, &msg);
+		if (msg == SP_CONFIG_CANNOT_OPEN_FILE) {
+			printf(DEFAULT_ERROR_FILE_OPEN_MSG);
+			return 1; //exit(1)
+		} else if (msg != SP_CONFIG_SUCCESS)
+			return 1; //exit(1)
+	} else if (argc == 3 && strcmp(argv[1], "-c") == 0) {
+		config = spConfigCreate(argv[2], &msg);
+		if (msg == SP_CONFIG_CANNOT_OPEN_FILE) {
+			printf(ERROR_FILE_OPEN_MSG, argv[2]);
+			return 1; //exit(1)
+		} else if (msg != SP_CONFIG_SUCCESS)
+			return 1; //exit(1)
+	} else {
+		printf(INVALID_CMD_LINE_ERROR_MSG);
+		return 1; //exit(1)
 	}
 
+	//Declaring and Initializing Variable from configuration
+	int numOfImg = spConfigGetNumOfImages(config, &msg);
+	int numSimilarImg = spConfigGetSimilarImages(config, &msg);
+	int spKNN = spConfigGetKNN(config, &msg);
+	int dim = spConfigGetPCADim(config, &msg);
+
+	//Creating new BPQueue MaxSize spKNN
+	SPBPQueue bpq = spBPQueueCreate(spKNN);
+	if(bpq==NULL){
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		return 1; //exit(1)
+	}
+
+	//Creating new ImageProc instance by using configuration.
+	ImageProc imageProc = ImageProc(config);
+
+
+    /**
+    * Checking Extraction Mode State:
+    * if extractionMode=true-->creating .feat files
+    * else -->use feat files DB.
+    */
+	if (spConfigIsExtractionMode(config, &msg)) {
+		if(msg != SP_CONFIG_SUCCESS){
+			printf(INVALID_EXTRAC_ARG_MSG); //Check HERE!
+			return 1; //exit(1)
+		}
+		for (int i = 0; i < numOfImg; i++) {
+			msg = spConfigGetImagePath(imagePath, config, i);  //generate img path
+			if (msg != SP_CONFIG_SUCCESS){
+				printf(INVALID_EXTRAC_ARG_MSG); //Check HERE!
+				return 1; //exit(1)
+			}
+		   //Extracting Image features for each image into SPPoint Array.
+			resPoints = imageProc.getImageFeatures(imagePath, i, numOfFeats); //get img feat for the feat file
+			if(resPoints==NULL){
+				puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+				return 1; //exit(1)
+			}
+
+			//Auxilary function - extracting features values to .feat files.
+			msg = createFeatFiles(config, imagePath, i, numOfFeats, resPoints); //CHECKK HERE/ LIRON GET CALM
+			if(msg!=SP_CONFIG_SUCCESS){
+				return 1; //exit(1)
+			}
+			//Destroying the SPPoint Array for reusing.
+			for (int j = 0; j < *numOfFeats; j++)
+				spPointDestroy(resPoints[j]);
+			free(resPoints);
+		}
+	}
 
 	//	Creation of point array with features of all images.
-	sizeOfTotalFeat = createTotalFeatArray(config,numOfImg,path,totalResPoints,dim);
+	totalResPoints = createTotalFeatArray(config, numOfImg, dim,&sizeOfTotalFeat); //CHECKK HERE/ LIRON GET CALM
+	if(totalResPoints==NULL){
+		return 1; //exit(1)
+	}
 	//Creation of KDArray with all point features - with image attribute
-	KdArrayInit(kdarray, totalResPoints, sizeOfTotalFeat);
-	//Creation of KDTree DB
-	kdTreeInit(kdarray, getSpSplitMethod(config), -1);
+	kdarray = KdArrayInit(totalResPoints, sizeOfTotalFeat);
+
+	//Destroying the SPPoint Total features Array.
+	for (int i = 0; i < KDArrayGetSize(kdarray); i++)
+		spPointDestroy(totalResPoints[i]);
+	free(totalResPoints);
+
+	//Checking Split Method from configuration file
+	spConfigGetKDSplitMethod(&method, config);
+
+	//Initializing KDTree DB
+	root = kdTreeInit(kdarray, method, -1);
+
+	//Destroying the KDArray
+	spKDArrayDestroy(kdarray);
 
 	//Search By Query
 	puts("Please enter an image path:");
-	scanf("%s", &path);
-	while (strcmp(path, "exit") != 0) {
-		struct featHits* countHits = (featHits*) malloc(
-				sizeof(featHits) * numOfImg);
-		// Init of Hits
+	fflush(NULL);
+	scanf("%s", &imagePath);
+	fflush(NULL);
+
+	//Declaring countHits for count similar features per image.
+	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
+	if(countHits==NULL){
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		return 1; //exit(1)
+	}
+	//Request Query Image Path until 'exit' enter
+	while (strcmp(imagePath, "<>") != 0) {
 		for (int i = 0; i < numOfImg; i++) {
 			countHits[i].hits = 0;
 			countHits[i].index = i;
 		}
-		resPoints = imgP.getImageFeatures(path, BAD_INDEX, numOfFeats); //get img feat for the feat file
+		//Extracting Image features for query image into SPPoint Array.
+		resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX,numOfFeats);
+		if(resPoints==NULL){
+			puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+			return 1; //exit(1)
+		}
 
-		for (int i = 0; i < numOfFeats[0]; i++) {
-			kNearestNeighbors(bpq, root, resPoints[i]);
-			for (int j = 0; j < spConfigGetspKNN(config, &msg); j++) {
-				int index = spListElementGetIndex(spBPQueuePeek(bpq)); //Creates Copy - Remember to destroy.
+		//Searching for nearest neighbors of each feature
+		for (int i = 0; i < *numOfFeats; i++) {
+			KD_TREE_MSG treeMsg = kNearestNeighbors(bpq, root, resPoints[i]);
+			if(treeMsg!=KD_TREE_SUCCESS){
+				return 1; //exit(1)
+			}
+			for (int j = 0; j < spKNN; j++) {
+				SP_BPQUEUE_MSG bpqMsg;
+				int index = spBPQueuePeekIndex(bpq);
 				countHits[index].hits++;
-				spBPQueueDequeue(bpq);
+				bpqMsg = spBPQueueDequeue(bpq);
+				if(bpqMsg!=SP_BPQUEUE_SUCCESS){
+					return 1; //exit(1)
+				}
 			}
 		}
 
-
-//		Sorting and getting the K best hits
+		//Sorting and getting the K best hits
 		qsort((void*) countHits, numOfImg, sizeof(featHits), hitsComp);
 
-
-//		Show Image
+		//	Checking Show Image State
 		if (spConfigMinimalGui(config, &msg)) {
 			for (int i = 0; i < numSimilarImg; i++) {
-				msg = spConfigGetImagePath(path, config, countHits[i].index);
-				imgP.showImage(path);
+				msg = spConfigGetImagePath(imagePath, config,
+						countHits[i].index);
+				if(msg!=SP_CONFIG_SUCCESS){
+					return 1; //exit(1)
+				}
+				imageProc.showImage(imagePath);
 			}
 		} else {
-			for (int i = 0; i < numSimilarImg; i++) {
-				printf("%d Printing the Pic", countHits[i].index);
-			}
+			printf("Best candidates for - %s - are:\n", imagePath);
+			for (int i = 0; i < numSimilarImg; i++)
+				spConfigGetImagePath(imagePath,config,countHits[i].index);
+				printf("%s\n",imagePath);
 		}
-
 		puts("Please enter an image path:");
-		scanf("%s", &path);
+		fflush(NULL);
+		scanf("%s", &imagePath);
+		fflush(NULL);
 	}
-	//Exit Msg-Logger
-//	destroyAll();
+	free(countHits);
+	KDTreeDestroy(root);
+	free(root);
 	return 0;
 }
-
 

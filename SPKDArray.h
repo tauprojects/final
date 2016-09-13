@@ -1,7 +1,7 @@
 #ifndef SPKDARRAY_H_
 #define SPKDARRAY_H_
-#include <SPPoint.h>
-#include <SPConfig.h>
+#include "SPPoint.h"
+#include "SPConfig.h"
 /**
  * SPKDArray Summary
  * Encapsulates a point with variable length dimension. The coordinates
@@ -22,6 +22,11 @@
 /** Type for defining the array **/
 typedef struct sp_kdarray_t* KDArray;
 
+typedef enum sp_kdarray_msg_t {
+	SP_KDARRAY_FAIL_ALLOCATION,
+	SP_KDARRAY_FAIL,
+	SP_KDARRAY_SUCCESS
+} SP_KDARRAY_MSG;
 /**
  * Init KDArray to array pointer.
  * Given SSPoint arr in length of size
@@ -31,8 +36,7 @@ typedef struct sp_kdarray_t* KDArray;
  *
  * @return- the response of creating the KDArray
  */
-SP_CONFIG_MSG KdArrayInit(KDArray array,SPPoint* arr, int size);
-
+KDArray KdArrayInit(SPPoint* arr, int size);
 /**
  * Allocates a copy of the given point.
  *
@@ -48,16 +52,45 @@ SP_CONFIG_MSG KdArrayInit(KDArray array,SPPoint* arr, int size);
  * NULL in case memory allocation occurs
  * Others a copy of source is returned.
  */
-double Split(KDArray kdArr, int coor,KDArray kdLeft ,KDArray kdRight);
+double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight);
 /**
  * Free all memory allocation associated with KDArray,
  * if array is NULL nothing happens.
  */
 void spKDArrayDestroy(KDArray kdArr);
+
+/**
+ * Getter of KDArry size
+ * @param kdarr - source kdarry
+ * @return 
+ * KdArry's size
+ */
 int KDArrayGetSize(KDArray kdarr);
+
+/**
+ * Getter for first element in KDArray
+ *
+ * @pararm
+ * kdarry - the source kdarry
+ * @return
+ * pointter to the first SPPount in kdarry
+ */
 SPPoint* KDArrayGetFirst(KDArray kdarr);
-int calcCoor(KDArray kdarr,SP_SPLIT_METHOD extractionMode, int i);
+
+/**
+ * Getter for the next coordinate the kdarry split with.
+ *
+ * @pararm
+ * kdarry - the source kdarry
+ * splitMethod - the relevant way the kdarry split with
+ * i - privious coordinate the kdarry split with
+ *      in the first time i will define to (-1)
+ * @return
+ * Next coordinite the kdarry split with
+ */
+int calcCoor(KDArray kdarr,SP_SPLIT_METHOD splitMethod, int i);
 int maxDiff(KDArray kdarr);
+int KDArrayGetAxis(KDArray kdarr,int i,int j);
 
 
 

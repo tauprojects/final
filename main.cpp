@@ -185,9 +185,10 @@ int main(int argc, char* argv[]) {
 			}
 		} else {
 			printf("Best candidates for - %s - are:\n", imagePath);
-			for (int i = 0; i < numSimilarImg; i++)
+			for (int i = 0; i < numSimilarImg; i++){
 				spConfigGetImagePath(imagePath,config,countHits[i].index);
 				printf("%s\n",imagePath);
+			}
 		}
 		puts("Please enter an image path:");
 		fflush(NULL);

@@ -20,7 +20,6 @@ int main(int argc, char* argv[]) {
 	//Declaring and Initializing Variable and Objects
 	SP_CONFIG_MSG msg; 				 //msg pointer
 	SPConfig config;  				 //config struct instance
-//	char imagePath[MAXLEN];	    //temporary path variable
 	char* imagePath = (char*)malloc(sizeof(char)*MAXLEN);
 	SP_SPLIT_METHOD method;
 	SPPoint* resPoints;				//temporary point array for each img
@@ -59,13 +58,6 @@ int main(int argc, char* argv[]) {
 	int numSimilarImg = spConfigGetSimilarImages(config, &msg);
 	int spKNN = spConfigGetKNN(config, &msg);
 	int dim = spConfigGetPCADim(config, &msg);
-
-	//Creating new BPQueue MaxSize spKNN
-	SPBPQueue bpq = spBPQueueCreate(spKNN);
-	if(bpq==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
-		return 1; //exit(1)
-	}
 
 	//Creating new ImageProc instance by using configuration.
 	ImageProc imageProc = ImageProc(config);
@@ -134,6 +126,8 @@ int main(int argc, char* argv[]) {
 //	scanf("%s", imagePath);
 //	fflush(NULL);
 strcpy(imagePath,"./queryA.png");
+//strcpy(imagePath,"C:/dev/cproject/final/queryA.png");
+
 	//Declaring countHits for count similar features per image.
 	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
 	if(countHits==NULL){
@@ -156,6 +150,12 @@ strcpy(imagePath,"./queryA.png");
 
 		//Searching for nearest neighbors of each feature
 		for (int i = 0; i < *numOfFeats; i++) {
+			//Creating new BPQueue MaxSize spKNN
+			SPBPQueue bpq = spBPQueueCreate(spKNN);
+			if(bpq==NULL){
+				puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+				return 1; //exit(1)
+			}
 			KD_TREE_MSG treeMsg = kNearestNeighbors(bpq, root, resPoints[i]);
 			if(treeMsg!=KD_TREE_SUCCESS){
 				return 1; //exit(1)
@@ -169,6 +169,7 @@ strcpy(imagePath,"./queryA.png");
 					return 1; //exit(1)
 				}
 			}
+			spBPQueueDestroy(bpq);
 		}
 
 		//Sorting and getting the K best hits
@@ -200,8 +201,8 @@ strcpy(imagePath,"./queryA.png");
 	}
 	free(countHits);
 	KDTreeDestroy(root);
-//	free(root);
 	free(imagePath);
+	free(numOfFeats);
 	return 0;
 }
 

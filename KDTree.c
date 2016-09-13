@@ -40,6 +40,8 @@ KDTreeNode kdTreeInit(KDArray arr, SP_SPLIT_METHOD splitMethod,int i){
 	KDArray leftArray;
 	KDArray rightArray;
 	root->val  =Split(arr,coor,&leftArray,&rightArray);
+	spKDArrayDestroy(arr);
+	free(arr);
 	root->left =kdTreeInit(leftArray,splitMethod, i);
 	root->right=kdTreeInit(rightArray,splitMethod,i);
 //	spKDArrayDestroy(leftArray);

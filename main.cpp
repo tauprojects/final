@@ -126,14 +126,14 @@ int main(int argc, char* argv[]) {
 	root = kdTreeInit(kdarray, method, -1);
 
 	//Destroying the KDArray
-	spKDArrayDestroy(kdarray);
+//	spKDArrayDestroy(kdarray);
 
 	//Search By Query
-	puts("Please enter an image path:");
-	fflush(NULL);
-	scanf("%s", imagePath);
-	fflush(NULL);
-
+//	puts("Please enter an image path:");
+//	fflush(NULL);
+//	scanf("%s", imagePath);
+//	fflush(NULL);
+strcpy(imagePath,"./queryA.png");
 	//Declaring countHits for count similar features per image.
 	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
 	if(countHits==NULL){
@@ -141,6 +141,7 @@ int main(int argc, char* argv[]) {
 		return 1; //exit(1)
 	}
 	//Request Query Image Path until 'exit' enter
+
 	while (strcmp(imagePath, "<>") != 0) {
 		for (int i = 0; i < numOfImg; i++) {
 			countHits[i].hits = 0;
@@ -190,10 +191,12 @@ int main(int argc, char* argv[]) {
 				printf("%s\n",imagePath);
 			}
 		}
-		puts("Please enter an image path:");
-		fflush(NULL);
-		scanf("%s", imagePath);
-		fflush(NULL);
+
+//		puts("Please enter an image path:");
+//		fflush(NULL);
+//		scanf("%s", imagePath);
+//		fflush(NULL);
+		strcpy(imagePath,"<>");
 	}
 	free(countHits);
 	KDTreeDestroy(root);

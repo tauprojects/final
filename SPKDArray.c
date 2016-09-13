@@ -159,8 +159,9 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 void spKDArrayDestroy(KDArray kdArr){
 	for(int i=0;i<kdArr->dim;i++)
 		free(kdArr->kdDB[i]);
-	for(int j=0;j<kdArr->size;j++)
+	for(int j=0;j<kdArr->size;j++){
 		spPointDestroy(kdArr->arr[j]);
+	}
 	free(kdArr->arr);
 	free(kdArr->kdDB);
 }

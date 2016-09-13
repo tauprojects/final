@@ -200,7 +200,7 @@ strcpy(imagePath,"./queryA.png");
 	}
 	free(countHits);
 	KDTreeDestroy(root);
-	free(root);
+//	free(root);
 	free(imagePath);
 	return 0;
 }

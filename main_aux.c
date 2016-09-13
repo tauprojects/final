@@ -13,7 +13,7 @@ SP_CONFIG_MSG createFeatFiles(SPConfig config, char* path,int i,int* numOfFeats,
 		return SP_CONFIG_CANNOT_OPEN_FILE;
 	}
 	//writing all relevant details for feat file
-	fprintf(tempFile, "%d \n", (const void*) numOfFeats[0]);
+	fprintf(tempFile, "%d \n", numOfFeats[0]);
 	int dim = spConfigGetPCADim(config, &msg) - 1;
 	for (int j = 0; j < numOfFeats[0]; j++) {
 		double temp = 0;

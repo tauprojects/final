@@ -332,8 +332,8 @@ void defualtVal(SPConfig config){
 }
 
 void printError(const char* filename, int lineNum, SP_CONFIG_ERROR error,char* param){
-	switch(error){
 	printf("File: %s\nLine: %d\nMessage: ", filename, lineNum);
+	switch(error){
 	case ERROR_VALUE:
 		printf("Invalid value - constraint not met\n");
 		break;

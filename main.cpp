@@ -20,7 +20,8 @@ int main(int argc, char* argv[]) {
 	//Declaring and Initializing Variable and Objects
 	SP_CONFIG_MSG msg; 				 //msg pointer
 	SPConfig config;  				 //config struct instance
-	char imagePath[MAXLEN];	    //temporary path variable
+//	char imagePath[MAXLEN];	    //temporary path variable
+	char* imagePath = (char*)malloc(sizeof(char)*MAXLEN);
 	SP_SPLIT_METHOD method;
 	SPPoint* resPoints;				//temporary point array for each img
 	SPPoint* totalResPoints;		//Point Array for all features
@@ -130,7 +131,7 @@ int main(int argc, char* argv[]) {
 	//Search By Query
 	puts("Please enter an image path:");
 	fflush(NULL);
-	scanf("%s", &imagePath);
+	scanf("%s", imagePath);
 	fflush(NULL);
 
 	//Declaring countHits for count similar features per image.
@@ -190,12 +191,13 @@ int main(int argc, char* argv[]) {
 		}
 		puts("Please enter an image path:");
 		fflush(NULL);
-		scanf("%s", &imagePath);
+		scanf("%s", imagePath);
 		fflush(NULL);
 	}
 	free(countHits);
 	KDTreeDestroy(root);
 	free(root);
+	free(imagePath);
 	return 0;
 }
 

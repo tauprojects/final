@@ -1,5 +1,5 @@
-CC = gcc -g
-CPP = g++ -g
+CC = gcc
+CPP = g++
 # put your object files here
 OBJS = main.o main_aux.o SPImageProc.o SPPoint.o SPConfig.o SPLogger.o SPBPriorityQueue.o SPListElement.o SPList.o KDTree.o SPKDArray.o
 # The executabel filename
@@ -9,10 +9,10 @@ LIBPATH=/usr/local/lib/opencv-3.1.0/lib/
 LIBS=-lopencv_xfeatures2d -lopencv_features2d \
 -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_core
 
-CPP_COMP_FLAG = -std=c++11  \
+CPP_COMP_FLAG = -std=c++11 -g \
   -DNDEBUG
 
-C_COMP_FLAG = -std=c99  \
+C_COMP_FLAG = -std=c99 -g \
   -DNDEBUG
 
 $(EXEC): $(OBJS)

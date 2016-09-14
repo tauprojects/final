@@ -389,6 +389,7 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
 	strcat(imagePath, config->spImagesPrefix);
 	strcat(imagePath, i);
 	strcat(imagePath, config->spImagesSuffix);
+	free(i);
 	return SP_CONFIG_SUCCESS;
 }
 
@@ -408,6 +409,7 @@ SP_CONFIG_MSG spConfigGetFeatsPath(char* featPath, const SPConfig config,int ind
 	strcat(featPath, config->spImagesPrefix);
 	strcat(featPath, i);
 	strcat(featPath, ".feat");
+	free(i);
 	return SP_CONFIG_SUCCESS;
 }
 

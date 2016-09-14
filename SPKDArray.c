@@ -165,7 +165,7 @@ void spKDArrayDestroy(KDArray kdArr){
 	free(kdArr->arr);
 	free(kdArr->kdDB);
 }
-//
+
 int KDArrayGetSize(KDArray kdarr){
 	return kdarr->size;
 }

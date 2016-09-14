@@ -47,7 +47,7 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 		return NULL;
 	}
-	KDArray kdarray = (KDArray)malloc(sizeof(KDArray));
+	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
 	if(kdarray==NULL){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 		return NULL;
@@ -145,7 +145,6 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 			spPointDestroy(tempArr[j]);
 	free(tempArr);
 	spKDArrayDestroy(kdArr);
-	free(kdArr);
 	return median;
 }
 
@@ -158,6 +157,7 @@ void spKDArrayDestroy(KDArray kdArr){
 	}
 	free(kdArr->arr);
 	free(kdArr->kdDB);
+	free(kdArr);
 }
 
 int KDArrayGetSize(KDArray kdarr){

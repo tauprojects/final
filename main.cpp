@@ -107,9 +107,9 @@ int main(int argc, char* argv[]) {
 	kdarray = KdArrayInit(totalResPoints, sizeOfTotalFeat);
 
 	//Destroying the SPPoint Total features Array.
-	for (int i = 0; i < KDArrayGetSize(kdarray); i++)
-		spPointDestroy(totalResPoints[i]);
-	free(totalResPoints);
+//	for (int i = 0; i < KDArrayGetSize(kdarray); i++)
+//		spPointDestroy(totalResPoints[i]);
+//	free(totalResPoints);
 
 	//Checking Split Method from configuration file
 	spConfigGetKDSplitMethod(&method, config);

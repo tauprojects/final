@@ -47,11 +47,11 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 		return NULL;
 	}
-	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
-	if(kdarray==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
-		return NULL;
-	}
+	KDArray kdarray;
+//	if(kdarray==NULL){
+//		puts("SP_KDARRAY_FAIL_ALLOCATION");
+//		return NULL;
+//	}
 	int dim=spPointGetDimension(arr[0]);
 	kdarray->dim=dim;
 	kdarray->kdDB  =(int**)malloc(sizeof(int*)*dim);
@@ -79,7 +79,7 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 	}
    //Copy PointArray
-	for(int i=0;i<kdarray->dim;i++){
+	for(int i=0;i<dim;i++){
 		for(int j=0;j<size;j++){
 			temparr[j].data=spPointGetAxisCoor(arr[j],i);
 			temparr[j].index=j;
@@ -95,7 +95,6 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 
 int KDArrayGetAxis(KDArray kdarr,int i,int j){
 	int result = kdarr->kdDB[i][j];
-//	printf("\nresult: %d",result);
 	return result;
 }
 
@@ -110,7 +109,7 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 	}
 	for(int i=0,index;i<tempSize;i++){
-		index =KDArrayGetAxis(kdArr,coor,i);
+		index = KDArrayGetAxis(kdArr,coor,i);
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 	}
 

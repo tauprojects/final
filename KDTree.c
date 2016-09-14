@@ -105,8 +105,6 @@ void KDTreeDestroy(KDTreeNode root){
 	}
 	KDTreeDestroy(root->left);
 	KDTreeDestroy(root->right);
-//	free(root->left);
-//	free(root->right);
 }
 
 

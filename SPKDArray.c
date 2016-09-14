@@ -72,7 +72,7 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		return NULL;
 	}
 	for(int i=0;i<size;i++){
-		kdarray->arr[i]=spPointCopy();
+		kdarray->arr[i]=spPointCopy(arr[i]);
 		spPointDestroy(arr[i]);
 	}
 	free(arr);

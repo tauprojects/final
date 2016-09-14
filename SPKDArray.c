@@ -43,6 +43,10 @@ int cmpfunc(const void * A, const void* B){
 
 //Empty Array'Size of 0 array and other mikrey katze
 KDArray KdArrayInit(SPPoint* arr, int size){
+	if(arr == NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
+	}
 	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
 	if(kdarray==NULL){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
@@ -59,10 +63,6 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		if(kdarray->kdDB[i]==NULL){
 			puts("SP_KDARRAY_FAIL_ALLOCATION");
 		}
-	}
-	if(kdarray==NULL || arr==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
-		return NULL;
 	}
 	kdarray->size=size;
 	kdarray->arr=(SPPoint*)malloc(sizeof(SPPoint)*size);
@@ -83,10 +83,6 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 	if(temparr==NULL){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 	}
-	if(kdarray->kdDB==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
-	}
-
    //Copy PointArray
 	for(int i=0;i<kdarray->dim;i++){
 		for(int j=0;j<size;j++){
@@ -98,7 +94,7 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 			kdarray->kdDB[i][j]=temparr[j].index;
 		}
 	}
-
+	free(temparr);
 	return kdarray;
 }
 

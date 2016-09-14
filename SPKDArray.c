@@ -47,11 +47,11 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		puts("SP_KDARRAY_FAIL_ALLOCATION");
 		return NULL;
 	}
-	KDArray kdarray;
-//	if(kdarray==NULL){
-//		puts("SP_KDARRAY_FAIL_ALLOCATION");
-//		return NULL;
-//	}
+	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
+	if(kdarray==NULL){
+		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		return NULL;
+	}
 	int dim=spPointGetDimension(arr[0]);
 	kdarray->dim=dim;
 	kdarray->kdDB  =(int**)malloc(sizeof(int*)*dim);

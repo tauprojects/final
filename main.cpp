@@ -117,9 +117,6 @@ int main(int argc, char* argv[]) {
 	//Initializing KDTree DB
 	root = kdTreeInit(kdarray, method, -1);
 
-	//Destroying the KDArray
-//	spKDArrayDestroy(kdarray);
-
 	//Search By Query
 //	puts("Please enter an image path:");
 //	fflush(NULL);

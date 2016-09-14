@@ -1,5 +1,5 @@
-CC = gcc
-CPP = g++
+CC = gcc -g
+CPP = g++ -g
 # put your object files here
 OBJS = main.o main_aux.o SPImageProc.o SPPoint.o SPConfig.o SPLogger.o SPBPriorityQueue.o SPListElement.o SPList.o KDTree.o SPKDArray.o
 # The executabel filename

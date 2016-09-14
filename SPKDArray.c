@@ -99,10 +99,6 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 		}
 	}
 
-	//Destroying the input Array.
-	for (int i = 0; i < KDArrayGetSize(kdarray); i++)
-		spPointDestroy(arr[i]);
-	free(arr);
 	return kdarray;
 }
 

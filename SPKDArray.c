@@ -152,6 +152,8 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 	for(int j=0;j<tempSize;j++)
 			spPointDestroy(tempArr[j]);
 	free(tempArr);
+	spKDArrayDestroy(kdArr);
+	free(kdArr);
 	return median;
 }
 

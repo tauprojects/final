@@ -62,7 +62,9 @@ KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
 	if(isLeaf(curr)){
 		double dist = spPointL2SquaredDistance(point,curr->data[0]);
 		int index = spPointGetIndex(curr->data[0]);
-		SP_BPQUEUE_MSG bpeMsg = spBPQueueEnqueue(bpq,spListElementCreate(index,dist));
+		SPListElement e=spListElementCreate(index,dist);
+		SP_BPQUEUE_MSG bpeMsg = spBPQueueEnqueue(bpq,e);
+		spListElementDestroy(e);
 		if(bpeMsg==SP_BPQUEUE_FULL || bpeMsg ==SP_BPQUEUE_SUCCESS){
 			return KD_TREE_SUCCESS;
 		}

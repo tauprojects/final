@@ -147,6 +147,8 @@ int main(int argc, char* argv[]) {
 	//Request Query Image Path until 'exit' enter
 
 	while (strcmp(imagePath, "<>") != 0) {
+		spLoggerPrintInfo("Working On Query Image In Path:");
+		spLoggerPrintInfo(imagePath);
 		for (int i = 0; i < numOfImg; i++) {
 			countHits[i].hits = 0;
 			countHits[i].index = i;
@@ -206,12 +208,14 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		spLoggerPrintInfo("Wating for another query image path");
 		puts("Please enter an image path:");
 		fflush(NULL);
 		scanf("%s", imagePath);
-		fflush(NULL);
-		strcpy(imagePath,"<>");
+//		fflush(NULL);
+//		strcpy(imagePath,"<>");
 	}
+	spLoggerPrintInfo(EXIT_MSG);
 	free(loggerFile);
 	spLoggerDestroy();
 	free(countHits);

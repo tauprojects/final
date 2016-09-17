@@ -225,7 +225,7 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 		}
 	}
 
-	else if (strcmp(key, "spMinimalGui") == 0) {
+	else if (strcmp(key, "spMinimalGUI") == 0) {
 		//lowercase
 //		strToLower(val);
 		if (strcmp(val, "true") == 0)

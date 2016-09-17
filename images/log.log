@@ -2,3 +2,11 @@
 - message: Configuration Initialize
 ---INFO---
 - message: ImagProc Object Created
+---INFO---
+- message: Working On Query Image In Path:
+---INFO---
+- message: C:/dev/cproject/final/queryA.png
+---INFO---
+- message: Wating for another query image path
+---INFO---
+- message: Exit...

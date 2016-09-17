@@ -4,6 +4,7 @@
 #include "SPKDArray.h"
 #include "SPBPriorityQueue.h"
 
+
 /**
  * KDTree Summary
  * Encapsulates a KDTree with KDTreeNode root,
@@ -28,6 +29,10 @@ typedef enum sp_tree_msg_t {
 	KD_TREE_INVALID_CURRENT,
 	KD_TREE_INIT_FAIL
 } KD_TREE_MSG;
+
+#define KD_TREE_FAIL_MSG "Failed to allocate"
+
+
 /**
  * Creates a new KDTree from specific KDArray
  *

@@ -6,10 +6,13 @@ SP_CONFIG_MSG createFeatFiles(SPConfig config, char* path,int i,int* numOfFeats,
 	FILE *tempFile;  //Temporary file for the creating of .feat files
 	SP_CONFIG_MSG msg;
 	msg = spConfigGetFeatsPath(path, config, i);
-	if(msg != SP_CONFIG_SUCCESS)
+	if(msg != SP_CONFIG_SUCCESS){
+		spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
 		return msg;
+	}
 	tempFile = fopen(path, "wt");   //creating feat file
 	if(!tempFile){
+		spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
 		return SP_CONFIG_CANNOT_OPEN_FILE;
 	}
 	//writing all relevant details for feat file
@@ -33,18 +36,18 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 	SP_CONFIG_MSG msg;
 	char* path = (char*) malloc(sizeof(char) * MAXLEN);
 	if(path==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return NULL; //exit(1)
 	}
 	int size = 0,j,k,numOfFeat;
 	double* valArr = (double*)malloc(sizeof(double)*dim);
 	if(valArr==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return NULL; //exit(1)
 	}
 	char* tempChar = (char*)malloc(sizeof(char)*MAXLEN);
 	if(tempChar==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return NULL; //exit(1)
 	}
 	for (int i = 0; i < numOfImg; i++) {
@@ -55,7 +58,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 		}
 		tempFile = fopen(path, "rt");   //getting feat file
 		if(!tempFile){
-			puts("SP_CONFIG_CANNOT_OPEN_FILE");
+			spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);
@@ -72,7 +75,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 	*sizeOfTotalFeat=size;
 	SPPoint* totalResPoints = (SPPoint*)malloc(sizeof(SPPoint) *size);
 	if(totalResPoints==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return NULL; //exit(1)
 	}
 	size=0;
@@ -81,7 +84,8 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 		spConfigGetFeatsPath(path, config, i);
 		tempFile = fopen(path, "rt");   //getting feat file
 		if(!tempFile){
-			puts("SP_CONFIG_CANNOT_OPEN_FILE");
+			spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
+
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);
@@ -92,7 +96,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 				fscanf(tempFile, "%s", tempChar);
 				valArr[k] = atof(tempChar);
 				if(valArr[k]==0){
-						puts("ERROR");
+					spLoggerPrintError(ERROR_MSG,__FILE__,__func__,__LINE__);
 						fflush(NULL);
 					}
 			}

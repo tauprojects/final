@@ -27,6 +27,9 @@ typedef enum sp_kdarray_msg_t {
 	SP_KDARRAY_FAIL,
 	SP_KDARRAY_SUCCESS
 } SP_KDARRAY_MSG;
+
+#define SP_KD_ARRAY_FAIL_MSG "Failed to allocate"
+
 /**
  * Init KDArray to array pointer.
  * Given SSPoint arr in length of size

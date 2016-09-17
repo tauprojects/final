@@ -1,5 +1,3 @@
-
-
 #define DEFAULT_FILE "spcbir.config"
 
 #include "SPImageProc.h"
@@ -26,11 +24,7 @@ int main(int argc, char* argv[]) {
 	SPPoint* totalResPoints;		//Point Array for all features
 	KDArray kdarray;
 	KDTreeNode root;
-	int* numOfFeats = (int*) malloc(sizeof(int)); //Temporary int pointer for the creating of .feat files
-	if(numOfFeats==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
-		return 1; //exit(1)
-	}
+
 	int sizeOfTotalFeat;
 
 	//Checking argument state
@@ -58,11 +52,27 @@ int main(int argc, char* argv[]) {
 	int numSimilarImg = spConfigGetSimilarImages(config, &msg);
 	int spKNN = spConfigGetKNN(config, &msg);
 	int dim = spConfigGetPCADim(config, &msg);
+	//Init Logger
+	char* loggerFile = (char*)malloc(sizeof(char)*MAXLEN);
+	SP_LOGGER_LEVEL loglevel = spConfigGetLoggerLevel(config);
+	msg = spConfigGetLoggerFilename(loggerFile,config);
+	spLoggerCreate(loggerFile,loglevel);
+
+	//Init and allocate after logger created.
+	int* numOfFeats = (int*) malloc(sizeof(int)); //Temporary int pointer for the creating of .feat files
+	if(numOfFeats==NULL){
+		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		return 1; //exit(1)
+	}
+	spLoggerPrintInfo(CONFIG_INIT_SUCCESS);
 
 	//Creating new ImageProc instance by using configuration.
 	ImageProc imageProc = ImageProc(config);
+	spLoggerPrintInfo(IMGPROC_INIT_SUCCESS_MSG);
 
-
+//	if(imageProc==NULL){
+//		return 1; //exit(1)
+//	}
     /**
     * Checking Extraction Mode State:
     * if extractionMode=true-->creating .feat files
@@ -70,25 +80,26 @@ int main(int argc, char* argv[]) {
     */
 	if (spConfigIsExtractionMode(config, &msg)) {
 		if(msg != SP_CONFIG_SUCCESS){
-			printf(INVALID_EXTRAC_ARG_MSG); //Check HERE!
+			spLoggerPrintError(INVALID_EXTRAC_ARG_MSG,__FILE__,__func__,__LINE__);
 			return 1; //exit(1)
 		}
 		for (int i = 0; i < numOfImg; i++) {
 			msg = spConfigGetImagePath(imagePath, config, i);  //generate img path
 			if (msg != SP_CONFIG_SUCCESS){
-				printf(INVALID_EXTRAC_ARG_MSG); //Check HERE!
+				spLoggerPrintError(INVALID_EXTRAC_ARG_MSG,__FILE__,__func__,__LINE__);
 				return 1; //exit(1)
 			}
 		   //Extracting Image features for each image into SPPoint Array.
 			resPoints = imageProc.getImageFeatures(imagePath, i, numOfFeats); //get img feat for the feat file
 			if(resPoints==NULL){
-				puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+				spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 				return 1; //exit(1)
 			}
 
 			//Auxilary function - extracting features values to .feat files.
 			msg = createFeatFiles(config, imagePath, i, numOfFeats, resPoints); //CHECKK HERE/ LIRON GET CALM
 			if(msg!=SP_CONFIG_SUCCESS){
+				spLoggerPrintError(FEAT_FIlLES_INIT_FAIL_MSG,__FILE__,__func__,__LINE__);
 				return 1; //exit(1)
 			}
 			//Destroying the SPPoint Array for reusing.
@@ -97,10 +108,12 @@ int main(int argc, char* argv[]) {
 			free(resPoints);
 		}
 	}
+//	spLoggerPrintInfo(EXIT_MSG);
 
 	//	Creation of point array with features of all images.
 	totalResPoints = createTotalFeatArray(config, numOfImg, dim,&sizeOfTotalFeat); //CHECKK HERE/ LIRON GET CALM
 	if(totalResPoints==NULL){
+		spLoggerPrintError(FEAT_ARRAY_INIT_FAIL_MSG,__FILE__,__func__,__LINE__);
 		return 1; //exit(1)
 	}
 	//Creation of KDArray with all point features - with image attribute
@@ -118,17 +131,17 @@ int main(int argc, char* argv[]) {
 	root = kdTreeInit(kdarray, method, -1);
 
 	//Search By Query
-//	puts("Please enter an image path:");
-//	fflush(NULL);
-//	scanf("%s", imagePath);
-//	fflush(NULL);
-strcpy(imagePath,"./queryA.png");
+	puts("Please enter an image path:");
+	fflush(NULL);
+	scanf("%s", imagePath);
+	fflush(NULL);
+//strcpy(imagePath,"./queryA.png");
 //strcpy(imagePath,"C:/dev/cproject/final/queryA.png");
 
 	//Declaring countHits for count similar features per image.
 	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
 	if(countHits==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return 1; //exit(1)
 	}
 	//Request Query Image Path until 'exit' enter
@@ -141,7 +154,7 @@ strcpy(imagePath,"./queryA.png");
 		//Extracting Image features for query image into SPPoint Array.
 		resPoints = imageProc.getImageFeatures(imagePath, BAD_INDEX,numOfFeats);
 		if(resPoints==NULL){
-			puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+			spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 			return 1; //exit(1)
 		}
 
@@ -150,11 +163,12 @@ strcpy(imagePath,"./queryA.png");
 			//Creating new BPQueue MaxSize spKNN
 			SPBPQueue bpq = spBPQueueCreate(spKNN);
 			if(bpq==NULL){
-				puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+				spLoggerPrintError(BPQUEUE_FAILURE,__FILE__,__func__,__LINE__);
 				return 1; //exit(1)
 			}
 			KD_TREE_MSG treeMsg = kNearestNeighbors(bpq, root, resPoints[i]);
 			if(treeMsg!=KD_TREE_SUCCESS){
+				spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
 				return 1; //exit(1)
 			}
 			for (int j = 0; j < spKNN; j++) {
@@ -163,6 +177,7 @@ strcpy(imagePath,"./queryA.png");
 				countHits[index].hits++;
 				bpqMsg = spBPQueueDequeue(bpq);
 				if(bpqMsg!=SP_BPQUEUE_SUCCESS){
+					spLoggerPrintError(BPQUEUE_FAILURE,__FILE__,__func__,__LINE__);
 					return 1; //exit(1)
 				}
 			}
@@ -178,6 +193,7 @@ strcpy(imagePath,"./queryA.png");
 				msg = spConfigGetImagePath(imagePath, config,
 						countHits[i].index);
 				if(msg!=SP_CONFIG_SUCCESS){
+					spLoggerPrintError(CONFIG_FAIL_MSG,__FILE__,__func__,__LINE__);
 					return 1; //exit(1)
 				}
 				imageProc.showImage(imagePath);
@@ -190,12 +206,14 @@ strcpy(imagePath,"./queryA.png");
 			}
 		}
 
-//		puts("Please enter an image path:");
-//		fflush(NULL);
-//		scanf("%s", imagePath);
-//		fflush(NULL);
+		puts("Please enter an image path:");
+		fflush(NULL);
+		scanf("%s", imagePath);
+		fflush(NULL);
 		strcpy(imagePath,"<>");
 	}
+	free(loggerFile);
+	spLoggerDestroy();
 	free(countHits);
 	KDTreeDestroy(root);
 	free(imagePath);

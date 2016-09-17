@@ -5,7 +5,15 @@
 #include "SPConfig.h"
 #include "SPPoint.h"
 #define FAIL_ALOC_MSG "Failed to allocate"
+#define CONFIG_INIT_SUCCESS "Configuration Initialize"
+#define IMGPROC_INIT_SUCCESS_MSG "ImagProc Object Created"
+#define FEAT_FIlLES_INIT_FAIL_MSG "Failed to create .feat files"
+#define FEAT_ARRAY_INIT_FAIL_MSG "Failed to create total features array"
+#define BPQUEUE_FAILURE "Failed to initialize BPQueue"
+#define CANNOT_OPEN_FILE_MSG "Input/Output error,Failed opening file"
+#define ERROR_MSG "Failure"
 
+#define EXIT_MSG "Exit..."
 
 #define BAD_INDEX 90
 

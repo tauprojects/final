@@ -479,6 +479,17 @@ bool spConfigMinimalGui(const SPConfig config, SP_CONFIG_MSG* msg) {
 		return false;
 }
 
+SP_CONFIG_MSG spConfigGetLoggerFilename(char* logger, const SPConfig config){
+	if (logger == NULL || config == NULL)
+		return SP_CONFIG_INVALID_ARGUMENT;
+	strcpy(logger, config->spLoggerFilename);
+	return SP_CONFIG_SUCCESS;
+}
+
+SP_LOGGER_LEVEL spConfigGetLoggerLevel(const SPConfig config){
+	return config->spLoggerLevel;
+}
+
 void toString(SPConfig config){
 	fflush(NULL);
 	printf("key: %s \t value: %s\n",getName(config->spImagesDirectory),config->spImagesDirectory);

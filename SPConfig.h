@@ -5,6 +5,7 @@
 #define ERROR_FILE_OPEN_MSG			  "The configuration file %s couldn’t be open\n"
 #define INVALID_CMD_LINE_ERROR_MSG   "Invalid command line : use -c <config_filename>\n"
 #define INVALID_EXTRAC_ARG_MSG       "Invalid Extraction Mode Argument"
+#define CONFIG_FAIL_MSG				  "Configuration Error"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -196,4 +197,6 @@ SP_CONFIG_MSG spConfigGetKDSplitMethod(SP_SPLIT_METHOD* method, const SPConfig c
 SP_CONFIG_MSG spConfigGetFeatsPath(char* featsPath, const SPConfig config,int index);
 int spConfigGetSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
 void toString(SPConfig config);
+SP_CONFIG_MSG spConfigGetLoggerFilename(char* logger, const SPConfig config);
+SP_LOGGER_LEVEL spConfigGetLoggerLevel(const SPConfig config);
 #endif /* SPCONFIG_H_ */

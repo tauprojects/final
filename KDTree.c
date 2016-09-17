@@ -53,8 +53,10 @@ bool isLeaf(KDTreeNode curr){
 		return false;
 }
 KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
-	if(curr==NULL)
+	if(curr==NULL){
+		spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
 		return KD_TREE_INVALID_CURRENT;
+	}
 	if(isLeaf(curr)){
 		double dist = spPointL2SquaredDistance(point,curr->data[0]);
 		int index = spPointGetIndex(curr->data[0]);
@@ -65,33 +67,42 @@ KD_TREE_MSG kNearestNeighbors(SPBPQueue bpq,KDTreeNode curr, SPPoint point){
 			return KD_TREE_SUCCESS;
 		}
 		else
+			spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
 			return KD_TREE_INIT_FAIL;
 	}
     bool isLeft=true;
 	if(spPointGetAxisCoor(point,curr->dim)<=curr->val){
 		KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->left,point);
-		if(msg!=KD_TREE_SUCCESS)
+		if(msg!=KD_TREE_SUCCESS){
+			spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
 			return KD_TREE_INIT_FAIL;
+		}
 
 	}
 	else{
 		isLeft = false;
 		KD_TREE_MSG msg = kNearestNeighbors(bpq, curr->right, point);
-		if (msg != KD_TREE_SUCCESS)
+		if (msg != KD_TREE_SUCCESS){
+			spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
 			return KD_TREE_INIT_FAIL;
+		}
     }
     double temp = ((curr->val)-spPointGetAxisCoor(point,curr->dim));
     temp=temp*temp;
     if(!spBPQueueIsFull(bpq) || temp<spBPQueueMaxValue(bpq)){
         if(isLeft){
          	KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->right,point);
-    		if (msg != KD_TREE_SUCCESS)
+    		if (msg != KD_TREE_SUCCESS){
+    			spLoggerPrintError("KDTree Failed To Initialize",__FILE__,__func__,__LINE__);
     			return KD_TREE_INIT_FAIL;
+    		}
         }
         else{
         	KD_TREE_MSG msg = kNearestNeighbors(bpq,curr->left,point);
-    		if (msg != KD_TREE_SUCCESS)
+    		if (msg != KD_TREE_SUCCESS){
+    			spLoggerPrintError(KD_TREE_FAIL_MSG,__FILE__,__func__,__LINE__);
     			return KD_TREE_INIT_FAIL;
+    		}
         }
     }
     return KD_TREE_SUCCESS;
@@ -105,8 +116,6 @@ void KDTreeDestroy(KDTreeNode root){
 	}
 	KDTreeDestroy(root->left);
 	KDTreeDestroy(root->right);
-//	free(root->left);
-//	free(root->right);
 }
 
 

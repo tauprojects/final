@@ -44,32 +44,33 @@ int cmpfunc(const void * A, const void* B){
 //Empty Array'Size of 0 array and other mikrey katze
 KDArray KdArrayInit(SPPoint* arr, int size){
 	if(arr == NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
+
 		return NULL;
 	}
 	KDArray kdarray = (KDArray)malloc(sizeof(*kdarray));
 	if(kdarray==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 		return NULL;
 	}
 	int dim=spPointGetDimension(arr[0]);
 	kdarray->dim=dim;
 	kdarray->kdDB  = (int**)malloc(sizeof(int*)*dim);
 	if(kdarray->kdDB == NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 		return NULL;
 	}
 	for(int i=0;i<dim;i++){
 		kdarray->kdDB[i]=(int*)malloc(sizeof(int)*size);
 		if(kdarray->kdDB[i]==NULL){
-			puts("SP_KDARRAY_FAIL_ALLOCATION");
+			spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 			return NULL;
 		}
 	}
 	kdarray->size=size;
 	kdarray->arr=(SPPoint*)malloc(sizeof(SPPoint)*size);
 	if(kdarray->arr==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 		return NULL;
 	}
 	for(int i=0;i<size;i++){
@@ -77,7 +78,7 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 	}
 	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size); //creating a temporary arr
 	if(temparr == NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 		//kdarray destroy?
 	}
    //Copy PointArray
@@ -108,7 +109,7 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 	tempSize = round_div(kdArr->size);
 	SPPoint* tempArr = (SPPoint*)malloc(sizeof(SPPoint)*tempSize);
 	if(tempArr==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 	}
 	for(int i=0,index;i<tempSize;i++){
 		index = KDArrayGetAxis(kdArr,coor,i);
@@ -123,7 +124,7 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 	tempSize = (kdArr->size)/2;
 	tempArr = (SPPoint*)malloc(sizeof(SPPoint)*tempSize);
 	if(tempArr==NULL){
-		puts("SP_KDARRAY_FAIL_ALLOCATION");
+		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
 	}
 	int index = KDArrayGetSize(*kdLeft)-1;
 	int medindex;
@@ -134,7 +135,8 @@ double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 		index = KDArrayGetAxis(kdArr,coor,i+KDArrayGetSize(*kdLeft));
 		tempArr[i]=spPointCopy(kdArr->arr[index]);
 		if(tempArr[i]==NULL){
-			puts("SP_KDARRAY_FAIL");
+			spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
+
 		}
 	}
 	*kdRight=KdArrayInit(tempArr,tempSize);

@@ -196,7 +196,10 @@ int spConfigGetKNN(const SPConfig config, SP_CONFIG_MSG* msg);
 SP_CONFIG_MSG spConfigGetKDSplitMethod(SP_SPLIT_METHOD* method, const SPConfig config);
 SP_CONFIG_MSG spConfigGetFeatsPath(char* featsPath, const SPConfig config,int index);
 int spConfigGetSimilarImages(const SPConfig config, SP_CONFIG_MSG* msg);
-void toString(SPConfig config);
 SP_CONFIG_MSG spConfigGetLoggerFilename(char* logger, const SPConfig config);
 SP_LOGGER_LEVEL spConfigGetLoggerLevel(const SPConfig config);
+
+//Helper functions for printing all the config values.
+void toString(SPConfig config);
+
 #endif /* SPCONFIG_H_ */

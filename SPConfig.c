@@ -173,8 +173,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 			return false;
 		}
 	} else if (strcmp(key, "spExtractionMode") == 0) {
-		//lowercase
-//		strToLower(val);
 		if (strcmp(val, "true") == 0)
 			config->spExtractionMode = true;
 		else if (strcmp(val, "false") == 0)
@@ -226,8 +224,6 @@ bool assignVal(SPConfig config, SP_CONFIG_MSG* msg, char* key, char* val,
 	}
 
 	else if (strcmp(key, "spMinimalGUI") == 0) {
-		//lowercase
-//		strToLower(val);
 		if (strcmp(val, "true") == 0)
 			config->spMinimalGui = true;
 		else if (strcmp(val, "false") == 0)

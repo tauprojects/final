@@ -52,16 +52,25 @@ int main(int argc, char* argv[]) {
 	int numSimilarImg = spConfigGetSimilarImages(config, &msg);
 	int spKNN = spConfigGetKNN(config, &msg);
 	int dim = spConfigGetPCADim(config, &msg);
+
 	//Init Logger
 	char* loggerFile = (char*)malloc(sizeof(char)*MAXLEN);
 	SP_LOGGER_LEVEL loglevel = spConfigGetLoggerLevel(config);
 	msg = spConfigGetLoggerFilename(loggerFile,config);
+	if(msg==SP_CONFIG_INVALID_ARGUMENT){
+		spLoggerPrintError(CONFIG_FAIL_MSG,__FILE__,__func__,__LINE__);
+	}
+	if (strcmp(loggerFile, "stdout") == 0){
+		//Creating logger with  std-output printing
+		spLoggerCreate(NULL,loglevel);
+	}
+	else
 	spLoggerCreate(loggerFile,loglevel);
 
 	//Init and allocate after logger created.
 	int* numOfFeats = (int*) malloc(sizeof(int)); //Temporary int pointer for the creating of .feat files
 	if(numOfFeats==NULL){
-		puts("FAIL_ALOC_MSG"); //not by the ben-dod. HEREEE
+		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return 1; //exit(1)
 	}
 	spLoggerPrintInfo(CONFIG_INIT_SUCCESS);
@@ -70,9 +79,6 @@ int main(int argc, char* argv[]) {
 	ImageProc imageProc = ImageProc(config);
 	spLoggerPrintInfo(IMGPROC_INIT_SUCCESS_MSG);
 
-//	if(imageProc==NULL){
-//		return 1; //exit(1)
-//	}
     /**
     * Checking Extraction Mode State:
     * if extractionMode=true-->creating .feat files
@@ -131,23 +137,20 @@ int main(int argc, char* argv[]) {
 	root = kdTreeInit(kdarray, method, -1);
 
 	//Search By Query
-	puts("Please enter an image path:");
+	puts(ENTER_IMG_PATH);
 	fflush(NULL);
 	scanf("%s", imagePath);
 	fflush(NULL);
-//strcpy(imagePath,"./queryA.png");
-//strcpy(imagePath,"C:/dev/cproject/final/queryA.png");
-
 	//Declaring countHits for count similar features per image.
 	struct featHits* countHits = (featHits*) malloc(sizeof(featHits) * numOfImg);
 	if(countHits==NULL){
 		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return 1; //exit(1)
 	}
-	//Request Query Image Path until 'exit' enter
 
+	//Request Query Image Path until 'exit' enter
 	while (strcmp(imagePath, "<>") != 0) {
-		spLoggerPrintInfo("Working On Query Image In Path:");
+		spLoggerPrintInfo(LOG_CURRENT_IMAGE_MSG);
 		spLoggerPrintInfo(imagePath);
 		for (int i = 0; i < numOfImg; i++) {
 			countHits[i].hits = 0;
@@ -189,7 +192,7 @@ int main(int argc, char* argv[]) {
 		//Sorting and getting the K best hits
 		qsort((void*) countHits, numOfImg, sizeof(featHits), hitsComp);
 
-		//	Checking Show Image State
+		//Checking Show Image State
 		if (spConfigMinimalGui(config, &msg)) {
 			for (int i = 0; i < numSimilarImg; i++) {
 				msg = spConfigGetImagePath(imagePath, config,
@@ -209,11 +212,9 @@ int main(int argc, char* argv[]) {
 		}
 
 		spLoggerPrintInfo("Wating for another query image path");
-		puts("Please enter an image path:");
+		puts(ENTER_IMG_PATH);
 		fflush(NULL);
 		scanf("%s", imagePath);
-//		fflush(NULL);
-//		strcpy(imagePath,"<>");
 	}
 	spLoggerPrintInfo(EXIT_MSG);
 	free(loggerFile);

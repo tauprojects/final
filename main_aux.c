@@ -15,6 +15,7 @@ SP_CONFIG_MSG createFeatFiles(SPConfig config, char* path,int i,int* numOfFeats,
 		spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
 		return SP_CONFIG_CANNOT_OPEN_FILE;
 	}
+	spLoggerPrintInfo("Creating Feat Files...");
 	//writing all relevant details for feat file
 	fprintf(tempFile, "%d \n", numOfFeats[0]);
 	int dim = spConfigGetPCADim(config, &msg) - 1;
@@ -50,6 +51,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 		spLoggerPrintError(FAIL_ALOC_MSG,__FILE__,__func__,__LINE__);
 		return NULL; //exit(1)
 	}
+	spLoggerPrintInfo("Creating Total Feat Array...");
 	for (int i = 0; i < numOfImg; i++) {
 		numOfFeat = 0;
 		msg = spConfigGetFeatsPath(path, config, i);
@@ -62,7 +64,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);
-		numOfFeat = atoi(tempChar);//Verifiy conversion from char text to int.
+		numOfFeat = atoi(tempChar);  //Verify conversion from char text to int.
 		for (j = size; j < size+numOfFeat; j++) {
 			for ( k = 0; k < dim; k++) {
 				fscanf(tempFile, "%s", tempChar);
@@ -89,7 +91,7 @@ SPPoint* createTotalFeatArray(SPConfig config, int numOfImg,int dim,int* sizeOfT
 			return NULL;
 		}
 		fscanf(tempFile, "%s", tempChar);
-		numOfFeat = atoi(tempChar);//Verifiy conversion from char text to int.
+		numOfFeat = atoi(tempChar);//Verify conversion from char text to int.
 		fflush(NULL);
 		for (j = size; j < size+numOfFeat; j++) {
 			for ( k = 0; k < dim; k++) {

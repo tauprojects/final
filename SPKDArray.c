@@ -41,7 +41,6 @@ int cmpfunc(const void * A, const void* B){
 	}
 }
 
-//Empty Array'Size of 0 array and other mikrey katze
 KDArray KdArrayInit(SPPoint* arr, int size){
 	if(arr == NULL){
 		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
@@ -79,7 +78,6 @@ KDArray KdArrayInit(SPPoint* arr, int size){
 	KDArrayCoor* temparr = (KDArrayCoor*)malloc(sizeof(KDArrayCoor)*size); //creating a temporary arr
 	if(temparr == NULL){
 		spLoggerPrintError(SP_KD_ARRAY_FAIL_MSG,__FILE__,__func__,__LINE__);
-		//kdarray destroy?
 	}
    //Copy PointArray
 	for(int i=0;i<dim;i++){
@@ -101,7 +99,7 @@ int KDArrayGetAxis(KDArray kdarr,int i,int j){
 	return result;
 }
 
-//Split Method - preduces two arrays into pointed arrays
+//Split Method - produces two arrays into pointed arrays
 double Split(KDArray kdArr, int coor,KDArray* kdLeft ,KDArray* kdRight){
 	int tempSize;
 	double median=0;

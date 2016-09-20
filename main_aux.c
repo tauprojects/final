@@ -15,7 +15,6 @@ SP_CONFIG_MSG createFeatFiles(SPConfig config, char* path,int i,int* numOfFeats,
 		spLoggerPrintError(CANNOT_OPEN_FILE_MSG,__FILE__,__func__,__LINE__);
 		return SP_CONFIG_CANNOT_OPEN_FILE;
 	}
-	spLoggerPrintInfo("Creating Feat Files...");
 	//writing all relevant details for feat file
 	fprintf(tempFile, "%d \n", numOfFeats[0]);
 	int dim = spConfigGetPCADim(config, &msg) - 1;
